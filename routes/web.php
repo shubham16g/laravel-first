@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
+/**
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/{user?}', function ($user=null) {
+    $data = compact('user');
+    return view('home')->with($data);
 });
+
+// Route to add product page with product data via post
+Route::post('/add-product', 'ProductController@addProduct');
