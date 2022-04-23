@@ -26,4 +26,8 @@ Route::get('/', function(){
 });
 
 Route::post('/product', [SubVariationController::class, 'addProduct']);
+Route::post('/sub_variation', [SubVariationController::class, 'addSubVariation']);
+Route::delete('/sub_variation', [SubVariationController::class, 'deleteSubVariation']);
+Route::put('/sub_variation/price', [SubVariationController::class, 'updateSubVariationPrice']);
+Route::put('/sub_variation/name', [SubVariationController::class, 'updateSubVariationName']);
 Route::get('/product', [ProductController::class, 'list']);
