@@ -18,4 +18,9 @@ class AllTag extends Model
         'value',
         'type',
     ];
+
+    protected $hidden = [
+        'pivot',
+        'all_tag_id',
+    ];
 }

@@ -16,7 +16,7 @@ class CreateAllTagsTable extends Migration
         Schema::create('all_tags', function (Blueprint $table) {
             $table->id("all_tag_id");
             $table->string("value", 255);
-            $table->enum('type', ['tag', 'category', 'sub_category', 'color', 'size', 'quantity', 'name', 'desc'])->default('tag');
+            $table->enum('type', ['tag', 'category', 'sub_variation', 'sub_category', 'variation', 'name', 'desc'])->default('tag');
         });
     }
 

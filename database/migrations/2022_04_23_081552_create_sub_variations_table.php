@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsTable extends Migration
+class CreateSubVariationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id('product_id');
-            $table->integer('group_id');
-            $table->integer('distinct_id');
-            $table->float('min_price');
-            $table->float('min_mrp');
-            $table->float('max_price');
-            $table->float('max_mrp');
+        Schema::create('sub_variations', function (Blueprint $table) {
+            $table->id('sub_variation_id');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products');
+            $table->string('sub_variation',255);
+            $table->float('price');
+            $table->float('mrp');
             $table->enum('status', ['active', 'disabled', 'deleted', 'out_of_stock', 'limited_stock', 'coming_soon'])->default('active');
             $table->timestamps();
         });
@@ -33,6 +32,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('sub_variations');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SubVariationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,5 @@ Route::get('/', function(){
 
 });
 
-Route::post('/product', [ProductController::class, 'store']);
+Route::post('/product', [SubVariationController::class, 'addProduct']);
+Route::get('/product', [ProductController::class, 'list']);
