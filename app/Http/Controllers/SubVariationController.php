@@ -19,7 +19,7 @@ class SubVariationController extends Controller
             'name' => 'required|string|max:100',
             'desc' => 'required|string|max:255',
 
-            'sub_category' => 'required|string|max:100',
+            'sub_category' => 'required|string|max:100|exists:sub_categories,name',
 
             'variation' => 'required|string|max:50',
 

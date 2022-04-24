@@ -79,24 +79,25 @@ class CategoryController extends Controller
     {
         $request->validate([
             'sub_category_id' => 'integer|exists:sub_categories,sub_category_id',
-            'sub_category_name' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
+            'sub_category' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
             'filter_structure_id' => 'integer|exists:filter_structures,filter_structure_id',
-            'filter_structure_name' => 'required_without:filter_structure_id|string|max:100|exists:filters,name',
+            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filters,name',
         ]);
 
-        $connect = new ConnectFilterSubCategory();
+        $subCategoryId = 0;
+        $filterStructureId = 0;
 
         if ($request->has('sub_category_id'))
-            $connect->sub_category_id = $request->sub_category_id;
+            $subCategoryId = $request->sub_category_id;
         else
-            $connect->sub_category_id = SubCategory::where('name', $request->sub_category_name)->first()->sub_category_id;
+            $subCategoryId = SubCategory::where('name', $request->sub_category)->first()->sub_category_id;
 
         if ($request->has('filter_structure_id'))
-            $connect->filter_structure_id = $request->filter_structure_id;
+            $filterStructureId = $request->filter_structure_id;
         else
-            $connect->filter_structure_id = FilterStructure::where('name', $request->filter_structure_name)->first()->filter_structure_id;
+            $filterStructureId = FilterStructure::where('name', $request->filter_structure)->first()->filter_structure_id;
 
-        $connect->save();
+        ConnectFilterSubCategory::findOrCreate(['sub_category_id' => $subCategoryId, 'filter_structure_id' => $filterStructureId]);
 
         return response()->json(['message' => 'Filter Added Successfully']);
     }
