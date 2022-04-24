@@ -13,4 +13,22 @@ class FilterStructure extends Model
     public $primaryKey = 'filter_structure_id';
     public $timestamps = false;
 
+    protected $hidden = [
+        'pivot',
+        'filter_structure_id',
+    ];
+
+    public function setInputValuesAttribute($value)
+    {
+        if ($value != null)
+            $this->attributes['input_values'] = json_encode($value);
+    }
+
+    public function getInputValuesAttribute($value)
+    {
+        if ($value == null)
+            return null;
+        return json_decode($value);
+    }
+
 }

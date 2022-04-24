@@ -11,6 +11,11 @@ class CategoryController extends Controller
 {
 
 
+    public function getSubCategories()
+    {
+        return SubCategory::with('filterStructues')->get();
+    }
+
     public function addSubCategory(Request $request)
     {
         $request->validate([
@@ -30,6 +35,8 @@ class CategoryController extends Controller
         $subCategory = new SubCategory();
         $subCategory->name = $request->name;
         $subCategory->desc = $request->desc;
+        $subCategory->type = $request->type;
+        $subCategory->type_values = $request->type_values;
         $subCategory->is_group_variations = $request->is_group_variations;
         $subCategory->is_show_variation_as_product = $request->is_show_variation_as_product;
         $subCategory->is_sub_variations = $request->is_sub_variations;
@@ -40,7 +47,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Sub Category Added Successfully']);
     }
 
-    public function addFilterToSubCategories(Request $request)
+    public function addFilterStructure(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:100|unique:filter_structures',
@@ -51,11 +58,7 @@ class CategoryController extends Controller
             'postfix' => 'nullable|string|max:100',
             'prefix' => 'nullable|string|max:100',
             'is_required' => 'required|boolean',
-            'is_applicable' => 'required|boolean',
-            'sub_categories' => 'nullable|array|min:1',
-            'sub_categories.*' => 'required_with:sub_categories|integer|exists:sub_categories,sub_category_id',
-            'sub_category_names' => 'reauired_without:sub_categories|array|min:1',
-            'sub_category_names.*' => 'required_with:sub_category_names|string|max:100|exists:sub_categories,name',
+            'is_applicable' => 'required|boolean'
         ]);
 
         $filter = new FilterStructure();
@@ -69,22 +72,31 @@ class CategoryController extends Controller
         $filter->is_applicable = $request->is_applicable;
         $filter->save();
 
-        if ($request->sub_categories) {
-            foreach ($request->sub_categories as $subCategoryId) {
-                $connectFilterSubCategory = new ConnectFilterSubCategory();
-                $connectFilterSubCategory->sub_category_id = $subCategoryId;
-                $connectFilterSubCategory->filter_structure_id = $filter->filter_structure_id;
-                $connectFilterSubCategory->save();
-            }
-        } else if ($request->sub_category_names) {
-            foreach ($request->sub_category_names as $subCategoryName) {
-                $subCategory = SubCategory::where('name', $subCategoryName)->first();
-                $connectFilterSubCategory = new ConnectFilterSubCategory();
-                $connectFilterSubCategory->sub_category_id = $subCategory->sub_category_id;
-                $connectFilterSubCategory->filter_structure_id = $filter->filter_structure_id;
-                $connectFilterSubCategory->save();
-            }
-        }
+        return response()->json(['message' => 'Filter Added Successfully']);
+    }
+
+    public function addFilterToSubCategory(Request $request)
+    {
+        $request->validate([
+            'sub_category_id' => 'integer|exists:sub_categories,sub_category_id',
+            'sub_category_name' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
+            'filter_structure_id' => 'integer|exists:filter_structures,filter_structure_id',
+            'filter_structure_name' => 'required_without:filter_structure_id|string|max:100|exists:filters,name',
+        ]);
+
+        $connect = new ConnectFilterSubCategory();
+
+        if ($request->has('sub_category_id'))
+            $connect->sub_category_id = $request->sub_category_id;
+        else
+            $connect->sub_category_id = SubCategory::where('name', $request->sub_category_name)->first()->sub_category_id;
+
+        if ($request->has('filter_structure_id'))
+            $connect->filter_structure_id = $request->filter_structure_id;
+        else
+            $connect->filter_structure_id = FilterStructure::where('name', $request->filter_structure_name)->first()->filter_structure_id;
+
+        $connect->save();
 
         return response()->json(['message' => 'Filter Added Successfully']);
     }
