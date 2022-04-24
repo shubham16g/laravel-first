@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SubVariationController;
 use Illuminate\Http\Request;
@@ -24,6 +25,9 @@ Route::get('/', function(){
     return 'API is working';
 
 });
+
+Route::post('/sub_category', [CategoryController::class, 'addSubCategory']);
+Route::post('/filter_structure', [CategoryController::class, 'addFilterToSubCategories']);
 
 Route::post('/product', [SubVariationController::class, 'addProduct']);
 Route::post('/sub_variation', [SubVariationController::class, 'addSubVariation']);
