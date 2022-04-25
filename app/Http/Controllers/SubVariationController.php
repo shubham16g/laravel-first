@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\AllTag;
 use App\Models\ConnectsAllTag;
 use App\Models\Product;
+use App\Models\SubCategory;
 use App\Models\SubVariation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,21 +24,41 @@ class SubVariationController extends Controller
 
             'variation' => 'required|string|max:50',
 
-            'sub_variation' => 'nullable|array',
-            'sub_variation.*.name' => 'required_with:sub_variation|string|max:50',
-            'sub_variation.*.price' => 'required_with:sub_variation|numeric|min:0',
-            'sub_variation.*.mrp' => 'required_with:sub_variation|gt:sub_variation.*.price|numeric|min:0',
+            'sub_variations' => 'nullable|array',
+            'sub_variations.*.name' => 'required_with:sub_variations|string|max:50',
+            'sub_variations.*.price' => 'required_with:sub_variations|numeric|min:0',
+            'sub_variations.*.mrp' => 'required_with:sub_variations|gt:sub_variations.*.price|numeric|min:0',
 
 
-            'price' => 'required_without:sub_variation.0.price|numeric|min:0',
-            'mrp' => 'required_without:sub_variation.0.mrp|gt:price|numeric|min:0',
+            'price' => 'required_without:sub_variations.0.price|numeric|min:0',
+            'mrp' => 'required_without:sub_variations.0.mrp|gt:price|numeric|min:0',
 
             'tags' => 'required|array',
             'tags.*' => 'required|max:50',
 
+            'filters' => 'required|array',
+            'filters.*.name' => 'required|exists:filter_structures,name',
+
         ]);
 
+        $subCategory = SubCategory::with('filterStructues')->where('name', $data['sub_category'])->first();
+
+
+        if ($subCategory->is_sub_variations) {
+            if (!$request->sub_variations) {
+                return "wtfr";
+            } else {
+                foreach ($request->sub_variations as $sub_variation) {
+                    // array contains
+                    if (!in_array($sub_variation['name'], $subCategory->sub_variation_input_list)) {
+                        return "wtf";
+                    }
+                }
+            }
+        }
         // todo check if sub_category group system and distinct system
+
+        return 'done';
 
         $allTags = [];
 
@@ -57,12 +78,12 @@ class SubVariationController extends Controller
 
         $product->save();
 
-        if (isset($data['sub_variation'])) {
+        if (isset($data['sub_variations'])) {
             $minMrp = 0;
             $minPrice = 0;
             $maxMrp = 0;
             $maxPrice = 0;
-            foreach ($data['sub_variation'] as $sub_variation) {
+            foreach ($data['sub_variations'] as $sub_variation) {
                 $allTags[AllTag::firstOrCreate(['value' => $sub_variation['name'], 'type' => 'sub_variation'])->all_tag_id] = true;
                 $subVariation = new SubVariation();
                 $subVariation->product_id = $currentProductID;

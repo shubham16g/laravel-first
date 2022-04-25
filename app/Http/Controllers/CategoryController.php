@@ -34,11 +34,11 @@ class CategoryController extends Controller
             'variation_input_list.*' => 'required_with:variation_input_list',
 
             'is_sub_variations' => 'required|boolean',
-            /* 'sub_variation_name' => 'required_if:is_sub_variations,true|string|max:100',
-            'sub_variation_postfix' => 'nullable|required_if:is_sub_variations,true|string|max:100',
-            'sub_variation_input_type' => 'required_if:is_sub_variations,true|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer,list',
-            'sub_variation_input_list' => 'required_if:sub_variation_input_type,list|array',
-            'sub_variation_input_list.*' => 'required_with:sub_variation_input_list|string|max:100', */
+            'sub_variation_name' => 'required_if:is_sub_variations,true|string|max:100',
+            'sub_variation_postfix' => 'nullable|string|max:100',
+            'sub_variation_input_type' => 'required_if:is_sub_variations,true|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer',
+            'sub_variation_input_list' => 'nullable|array',
+            'sub_variation_input_list.*' => 'required_with:sub_variation_input_list',
 
 
             'is_group_variations' => 'required|boolean',
@@ -46,14 +46,14 @@ class CategoryController extends Controller
         ]);
 
 
-
+        // todo improve validation technique
         if ($request->variation_input_list != null) {
             if (!$this->all($request->variation_input_list, $request->variation_input_type)) {
                 return $this->errorInvalidGivenData('variation_input_list', 'all fields must be of type ' . $request->variation_input_type);
             }
         }
 
-        // return $request->all();
+        // todo validate text_all_cap text_first_cap
 
 
         $subCategory = new SubCategory();
@@ -65,15 +65,22 @@ class CategoryController extends Controller
         $subCategory->variation_name = $request->variation_name;
         $subCategory->variation_postfix = $request->variation_postfix;
         $subCategory->variation_input_type = $request->variation_input_type;
+        $subCategory->variation_input_list = $request->variation_input_list;
 
+        $subCategory->is_sub_variations = $request->is_sub_variations;
+        if ($request->is_sub_variations == true) {
+            $subCategory->sub_variation_name = $request->sub_variation_name;
+            $subCategory->sub_variation_postfix = $request->sub_variation_postfix;
+            $subCategory->sub_variation_input_type = $request->sub_variation_input_type;
+            $subCategory->sub_variation_input_list = $request->sub_variation_input_list;
+        }
 
 
         $subCategory->is_group_variations = $request->is_group_variations;
         $subCategory->is_show_variation_as_product = $request->is_show_variation_as_product;
-        $subCategory->is_sub_variations = $request->is_sub_variations;
 
-        return $subCategory;
-        // $subCategory->save();
+        // return $subCategory;
+        $subCategory->save();
 
         return response()->json(['message' => 'Sub Category Added Successfully']);
     }
@@ -82,9 +89,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:100|unique:filter_structures',
-            'input_type' => 'required|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer,list_radio,list_checkbox',
-            'input_list' => 'nullable|array|if:input_type=list_radio,list_checkbox',
-            'input_list.*' => 'required_with:input_list|string|max:100',
+            'input_type' => 'required|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer',
+            'input_list' => 'nullable|array',
+            'input_list.*' => 'required_with:input_list',
+            'is_multiple_input' => 'required|boolean',
             'filter_type' => 'required|string|max:100|in:fixed,range,fixed_range',
             'postfix' => 'nullable|string|max:100',
             'prefix' => 'nullable|string|max:100',
@@ -92,10 +100,21 @@ class CategoryController extends Controller
             'is_applicable' => 'required|boolean'
         ]);
 
+        // todo improve validation technique
+        if ($request->input_list != null) {
+            if (!$this->all($request->input_list, $request->input_type)) {
+                return $this->errorInvalidGivenData('input_list', 'all fields must be of type ' . $request->input_type);
+            }
+        }
+
+
+        // todo validate text_all_cap text_first_cap
+
         $filter = new FilterStructure();
         $filter->name = $request->name;
         $filter->input_type = $request->input_type;
         $filter->input_list = $request->input_list;
+        $filter->is_multiple_input = $request->is_multiple_input;
         $filter->filter_type = $request->filter_type;
         $filter->postfix = $request->postfix;
         $filter->prefix = $request->prefix;
