@@ -30,6 +30,7 @@ Route::get('/sub-category', [CategoryController::class, 'getSubCategories']);
 Route::post('/sub-category', [CategoryController::class, 'addSubCategory']);
 Route::post('/filter-structure', [CategoryController::class, 'addFilterStructure']);
 Route::post('/sub-category/add-filter-structure', [CategoryController::class, 'addFilterToSubCategory']);
+Route::post('/sub-category/remove-filter-structure', [CategoryController::class, 'removeFilterToSubCategory']);
 
 Route::post('/product', [SubVariationController::class, 'addProduct']);
 Route::post('/sub_variation', [SubVariationController::class, 'addSubVariation']);

@@ -11,4 +11,10 @@ class ConnectFilterSubCategory extends Model
 
     // notimestamp
     public $timestamps = false;
+
+    // fillable
+    protected $fillable = [
+        'sub_category_id',
+        'filter_structure_id',
+    ];
 }

@@ -19,11 +19,19 @@ class CreateSubCategoriesTable extends Migration
             $table->string('desc', 255);
             $table->string('type', 100)->nullable();
             $table->json('type_values')->nullable();
+            $table->string('variation_name', 100);
+            $table->enum('variation_input_type', ['text', 'text_all_cap', 'text_first_cap', 'decimal', 'integer', 'list']);
+            $table->json('variation_input_list')->nullable();
+            $table->string('variation_postfix', 100)->nullable();
+
+            $table->boolean('is_sub_variations')->default(false);
+            $table->string('sub_variation_name', 100)->nullable();
+            $table->enum('sub_variation_input_type', ['text', 'text_all_cap', 'text_first_cap', 'decimal', 'integer', 'list']);
+            $table->json('sub_variation_input_list')->nullable();
+            $table->string('sub_variation_postfix', 100)->nullable();
+
             $table->boolean('is_group_variations')->default(true);
             $table->boolean('is_show_variation_as_product')->default(true);
-            $table->boolean('is_sub_variations')->default(false);
-            $table->string('variation_name', 100);
-            $table->string('variation_postfix', 100)->nullable();
         });
     }
 
