@@ -33,7 +33,7 @@ Route::post('/filter-structure/{type}', [FilterStructureController::class, 'addF
 Route::post('/sub-category/add-filter-structure', [CategoryController::class, 'addFilterToSubCategory']);
 Route::post('/sub-category/remove-filter-structure', [CategoryController::class, 'removeFilterToSubCategory']);
 
-Route::post('/product', [SubVariationController::class, 'addProduct']);
+Route::post('/product', [ProductController::class, 'addProduct']);
 Route::post('/sub_variation', [SubVariationController::class, 'addSubVariation']);
 Route::delete('/sub_variation', [SubVariationController::class, 'deleteSubVariation']);
 Route::put('/sub_variation/price', [SubVariationController::class, 'updateSubVariationPrice']);

@@ -13,7 +13,7 @@ class CategoryController extends Controller
 
     public function getSubCategories()
     {
-        return SubCategory::with('filterStructues')->with('variation')->with('subVariation')->get();
+        return SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->get();
     }
 
     public function addSubCategory(Request $request)

@@ -19,15 +19,15 @@ class SubCategory extends Model
         return $this->belongsToMany('App\Models\FilterStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure_id');
     }
 
-    public function variation()
+    public function variationStructure()
     {
-        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'variation')
+        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'variation_structure')
         ->select(['filter_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix', 'prefix']);
     }
 
-    public function subVariation()
+    public function subVariationStructure()
     {
-        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'sub_variation')
+        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'sub_variation_structure')
         ->select(['filter_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix', 'prefix']);
     }
 
