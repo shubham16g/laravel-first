@@ -18,13 +18,13 @@ class FilterStructure extends Model
         'filter_structure_id',
     ];
 
-    public function setInputValuesAttribute($value)
+    public function setInputListAttribute($value)
     {
         if ($value != null)
-            $this->attributes['input_values'] = json_encode($value);
+            $this->attributes['input_list'] = json_encode($value);
     }
 
-    public function getInputValuesAttribute($value)
+    public function getInputListAttribute($value)
     {
         if ($value == null)
             return null;

@@ -19,39 +19,25 @@ class SubCategory extends Model
         return $this->belongsToMany('App\Models\FilterStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure_id');
     }
 
+    public function variation()
+    {
+        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'variation')
+        ->select(['filter_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix', 'prefix']);
+    }
+
+    public function subVariation()
+    {
+        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'sub_variation')
+        ->select(['filter_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix', 'prefix']);
+    }
+
     public function setTypeValuesAttribute($value)
     {
         if ($value != null)
             $this->attributes['type_values'] = json_encode($value);
     }
 
-    public function setVariationInputListAttribute($value)
-    {
-        if ($value != null)
-            $this->attributes['variation_input_list'] = json_encode($value);
-    }
-
-    public function setSubVariationInputListAttribute($value)
-    {
-        if ($value != null)
-            $this->attributes['sub_variation_input_list'] = json_encode($value);
-    }
-
     public function getTypeValuesAttribute($value)
-    {
-        if ($value == null)
-            return null;
-        return json_decode($value);
-    }
-
-    public function getVariationInputListAttribute($value)
-    {
-        if ($value == null)
-            return null;
-        return json_decode($value);
-    }
-
-    public function getSubVariationInputListAttribute($value)
     {
         if ($value == null)
             return null;

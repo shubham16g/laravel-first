@@ -13,7 +13,7 @@ class CategoryController extends Controller
 
     public function getSubCategories()
     {
-        return SubCategory::with('filterStructues')->get();
+        return SubCategory::with('filterStructues')->with('variation')->with('subVariation')->get();
     }
 
     public function addSubCategory(Request $request)
@@ -25,26 +25,15 @@ class CategoryController extends Controller
             'type_values' => 'required_with:type|array',
             'type_values.*' => 'required_with:type|string|max:100',
 
+            'variation' => 'required|string|max:100|exists:filter_structures,name,type,variation',
+            'sub_variation' => 'nullable|string|max:100|exists:filter_structures,name,type,sub_variation',
 
-            'variation_name' => 'required|string|max:100',
-            'variation_postfix' => 'nullable|string|max:100',
-            'variation_input_type' => 'required|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer',
-            'variation_input_list' => 'nullable|array',
-            // if variation_input_type is text, then variation_input_list should be string else number
-            'variation_input_list.*' => 'required_with:variation_input_list',
-
-            'is_sub_variations' => 'required|boolean',
-            'sub_variation_name' => 'required_if:is_sub_variations,true|string|max:100',
-            'sub_variation_postfix' => 'nullable|string|max:100',
-            'sub_variation_input_type' => 'required_if:is_sub_variations,true|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer',
-            'sub_variation_input_list' => 'nullable|array',
-            'sub_variation_input_list.*' => 'required_with:sub_variation_input_list',
-
+            'filter_structures' => 'nullable|array',
+            'filter_structures.*' => 'required_with:filter_structures|string|max:100|exists:filter_structures,name,type,filter',
 
             'is_group_variations' => 'required|boolean',
             'is_show_variation_as_product' => 'required|boolean',
         ]);
-
 
         // todo improve validation technique
         if ($request->variation_input_list != null) {
@@ -62,19 +51,8 @@ class CategoryController extends Controller
         $subCategory->type = $request->type;
         $subCategory->type_values = $request->type_values;
 
-        $subCategory->variation_name = $request->variation_name;
-        $subCategory->variation_postfix = $request->variation_postfix;
-        $subCategory->variation_input_type = $request->variation_input_type;
-        $subCategory->variation_input_list = $request->variation_input_list;
-
-        $subCategory->is_sub_variations = $request->is_sub_variations;
-        if ($request->is_sub_variations == true) {
-            $subCategory->sub_variation_name = $request->sub_variation_name;
-            $subCategory->sub_variation_postfix = $request->sub_variation_postfix;
-            $subCategory->sub_variation_input_type = $request->sub_variation_input_type;
-            $subCategory->sub_variation_input_list = $request->sub_variation_input_list;
-        }
-
+        $subCategory->variation = FilterStructure::where('name', $request->variation)->first()->filter_structure_id;
+        $subCategory->sub_variation = FilterStructure::where('name', $request->sub_variation)->first()->filter_structure_id;
 
         $subCategory->is_group_variations = $request->is_group_variations;
         $subCategory->is_show_variation_as_product = $request->is_show_variation_as_product;
@@ -82,47 +60,15 @@ class CategoryController extends Controller
         // return $subCategory;
         $subCategory->save();
 
-        return response()->json(['message' => 'Sub Category Added Successfully']);
-    }
-
-    public function addFilterStructure(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:100|unique:filter_structures',
-            'input_type' => 'required|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer',
-            'input_list' => 'nullable|array',
-            'input_list.*' => 'required_with:input_list',
-            'is_multiple_input' => 'required|boolean',
-            'filter_type' => 'required|string|max:100|in:fixed,range,fixed_range',
-            'postfix' => 'nullable|string|max:100',
-            'prefix' => 'nullable|string|max:100',
-            'is_required' => 'required|boolean',
-            'is_applicable' => 'required|boolean'
-        ]);
-
-        // todo improve validation technique
-        if ($request->input_list != null) {
-            if (!$this->all($request->input_list, $request->input_type)) {
-                return $this->errorInvalidGivenData('input_list', 'all fields must be of type ' . $request->input_type);
+        if ($request->has('filter_structures')) {
+            $subCategory->filter_structures = $request->filter_structures;
+            foreach ($request->filter_structures as $filterName) {
+                $filterStructureId = FilterStructure::where('name', $filterName)->first()->filter_structure_id;
+                ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $subCategory->sub_category_id, 'filter_structure_id' => $filterStructureId]);
             }
         }
 
-
-        // todo validate text_all_cap text_first_cap
-
-        $filter = new FilterStructure();
-        $filter->name = $request->name;
-        $filter->input_type = $request->input_type;
-        $filter->input_list = $request->input_list;
-        $filter->is_multiple_input = $request->is_multiple_input;
-        $filter->filter_type = $request->filter_type;
-        $filter->postfix = $request->postfix;
-        $filter->prefix = $request->prefix;
-        $filter->is_required = $request->is_required;
-        $filter->is_applicable = $request->is_applicable;
-        $filter->save();
-
-        return response()->json(['message' => 'Filter Added Successfully']);
+        return response()->json(['message' => 'Sub Category Added Successfully']);
     }
 
     public function addFilterToSubCategory(Request $request)
@@ -131,7 +77,7 @@ class CategoryController extends Controller
             'sub_category_id' => 'integer|exists:sub_categories,sub_category_id',
             'sub_category' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
             'filter_structure_id' => 'integer|exists:filter_structures,filter_structure_id',
-            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filter_structures,name',
+            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filter_structures,name,type,filter',
         ]);
 
         $subCategoryId = 0;
@@ -158,7 +104,7 @@ class CategoryController extends Controller
             'sub_category_id' => 'integer|exists:sub_categories,sub_category_id',
             'sub_category' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
             'filter_structure_id' => 'integer|exists:filter_structures,filter_structure_id',
-            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filter_structures,name',
+            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filter_structures,name,type,filter',
         ]);
 
         $subCategoryId = 0;
@@ -178,35 +124,5 @@ class CategoryController extends Controller
         if ($data != null)
             $data->delete();
         return response()->json(['message' => 'Filter Removed Successfully']);
-    }
-
-
-
-
-
-
-
-    private function all($array, $type): bool
-    {
-        $arr = [
-            'text' => 'is_string',
-            'text_all_cap' => 'is_string',
-            'text_first_cap' => 'is_string',
-            'decimal' => 'is_numeric',
-            'integer' => 'is_int',
-        ];
-        return array_filter($array, $arr[$type]) === $array;
-    }
-
-    private function errorInvalidGivenData($field, $msg)
-    {
-        return response()->json([
-            "message" => "The given data was invalid.",
-            "errors" => [
-                $field => [
-                    $msg
-                ]
-            ]
-        ],422);
     }
 }

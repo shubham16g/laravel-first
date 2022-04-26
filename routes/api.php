@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FilterStructureController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SubVariationController;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ Route::get('/', function(){
 
 Route::get('/sub-category', [CategoryController::class, 'getSubCategories']);
 Route::post('/sub-category', [CategoryController::class, 'addSubCategory']);
-Route::post('/filter-structure', [CategoryController::class, 'addFilterStructure']);
+Route::post('/filter-structure/{type}', [FilterStructureController::class, 'addFilterStructure']);
 Route::post('/sub-category/add-filter-structure', [CategoryController::class, 'addFilterToSubCategory']);
 Route::post('/sub-category/remove-filter-structure', [CategoryController::class, 'removeFilterToSubCategory']);
 

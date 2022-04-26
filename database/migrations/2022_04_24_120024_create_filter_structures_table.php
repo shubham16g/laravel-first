@@ -16,12 +16,13 @@ class CreateFilterStructuresTable extends Migration
         Schema::create('filter_structures', function (Blueprint $table) {
             $table->id('filter_structure_id');
             $table->string('name', 100);
+            $table->enum('type', ['filter', 'variation', 'sub_variation'])->default('filter');
             $table->enum('input_type', ['text', 'text_all_cap', 'text_first_cap', 'decimal', 'integer']);
             $table->json('input_list')->nullable();
-            $table->boolean('is_multiple_input')->default(false);
             $table->enum('filter_type', ['fixed', 'range', 'fixed_range'])->default('fixed');
             $table->string('postfix', 100)->nullable();
             $table->string('prefix', 100)->nullable();
+            $table->boolean('is_multiple_input')->default(false);
             $table->boolean('is_required')->default(true);
             $table->boolean('is_applicable')->default(true);
         });
