@@ -25,8 +25,8 @@ class CategoryController extends Controller
             'type_values' => 'required_with:type|array',
             'type_values.*' => 'required_with:type|string|max:100',
 
-            'variation' => 'required|string|max:100|exists:filter_structures,name,type,variation',
-            'sub_variation' => 'nullable|string|max:100|exists:filter_structures,name,type,sub_variation',
+            'variation_structure' => 'required|string|max:100|exists:filter_structures,name,type,variation',
+            'sub_variation_structure' => 'nullable|string|max:100|exists:filter_structures,name,type,sub_variation',
 
             'filter_structures' => 'nullable|array',
             'filter_structures.*' => 'required_with:filter_structures|string|max:100|exists:filter_structures,name,type,filter',
@@ -34,14 +34,6 @@ class CategoryController extends Controller
             'is_group_variations' => 'required|boolean',
             'is_show_variation_as_product' => 'required|boolean',
         ]);
-
-        // todo improve validation technique
-        if ($request->variation_input_list != null) {
-            if (!$this->all($request->variation_input_list, $request->variation_input_type)) {
-                return $this->errorInvalidGivenData('variation_input_list', 'all fields must be of type ' . $request->variation_input_type);
-            }
-        }
-
         // todo validate text_all_cap text_first_cap
 
 
@@ -51,8 +43,8 @@ class CategoryController extends Controller
         $subCategory->type = $request->type;
         $subCategory->type_values = $request->type_values;
 
-        $subCategory->variation = FilterStructure::where('name', $request->variation)->first()->filter_structure_id;
-        $subCategory->sub_variation = FilterStructure::where('name', $request->sub_variation)->first()->filter_structure_id;
+        $subCategory->variation_structure = FilterStructure::where('name', $request->variation_structure)->first()->filter_structure_id;
+        $subCategory->sub_variation_structure = FilterStructure::where('name', $request->sub_variation_structure)->first()->filter_structure_id;
 
         $subCategory->is_group_variations = $request->is_group_variations;
         $subCategory->is_show_variation_as_product = $request->is_show_variation_as_product;

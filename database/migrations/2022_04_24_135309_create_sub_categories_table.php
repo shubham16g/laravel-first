@@ -20,11 +20,11 @@ class CreateSubCategoriesTable extends Migration
             $table->string('type', 100)->nullable();
             $table->json('type_values')->nullable();
 
-            $table->unsignedBigInteger('variation');
-            $table->foreign('variation')->references('filter_structure_id')->on('filter_structures');
+            $table->unsignedBigInteger('variation_structure');
+            $table->foreign('variation_structure')->references('filter_structure_id')->on('filter_structures');
 
-            $table->unsignedBigInteger('sub_variation')->nullable();
-            $table->foreign('sub_variation')->references('filter_structure_id')->on('filter_structures');
+            $table->unsignedBigInteger('sub_variation_structure')->nullable();
+            $table->foreign('sub_variation_structure')->references('filter_structure_id')->on('filter_structures');
 
             $table->boolean('is_group_variations')->default(true);
             $table->boolean('is_show_variation_as_product')->default(true);
