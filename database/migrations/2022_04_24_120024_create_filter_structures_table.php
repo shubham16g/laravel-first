@@ -17,7 +17,7 @@ class CreateFilterStructuresTable extends Migration
             $table->id('filter_structure_id');
             $table->string('name', 100);
             $table->enum('type', ['filter', 'variation', 'sub_variation'])->default('filter');
-            $table->enum('input_type', ['text', 'text_all_cap', 'text_first_cap', 'decimal', 'integer']);
+            $table->enum('input_type', ['string', 'string_all_cap', 'string_first_cap', 'numeric', 'integer']);
             $table->json('input_list')->nullable();
             $table->enum('filter_type', ['fixed', 'range', 'fixed_range'])->default('fixed');
             $table->string('postfix', 100)->nullable();

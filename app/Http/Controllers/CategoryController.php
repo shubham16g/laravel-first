@@ -34,7 +34,6 @@ class CategoryController extends Controller
             'is_group_variations' => 'required|boolean',
             'is_show_variation_as_product' => 'required|boolean',
         ]);
-        // todo validate text_all_cap text_first_cap
 
 
         $subCategory = new SubCategory();

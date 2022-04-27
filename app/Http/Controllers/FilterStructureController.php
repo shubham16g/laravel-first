@@ -9,9 +9,14 @@ class FilterStructureController extends Controller
 {
     public function addFilterStructure(Request $request, string $type)
     {
+
+        $request->merge([
+            'type' => $type,
+        ]);
         $request->validate([
             'name' => 'required|string|max:100|unique:filter_structures',
-            'input_type' => 'required|string|max:100|in:text,text_all_cap,text_first_cap,decimal,integer',
+            'type' => 'required|string|max:100|in:filter,variation,sub-variation',
+            'input_type' => 'required|string|max:100|in:string,string_all_cap,string_first_cap,numeric,integer',
             'input_list' => 'nullable|array',
             'input_list.*' => 'required_with:input_list',
             'filter_type' => 'required|string|max:100|in:fixed,range,fixed_range',
@@ -36,7 +41,8 @@ class FilterStructureController extends Controller
         $filter->name = $request->name;
         $filter->type = str_replace("-", "_", $type);
         $filter->input_type = $request->input_type;
-        $filter->input_list = $request->input_list;
+        if ($request->type != 'variation')
+            $filter->input_list = $request->input_list;
         $filter->filter_type = $request->filter_type;
         $filter->postfix = $request->postfix;
         $filter->prefix = $request->prefix;
@@ -57,10 +63,10 @@ class FilterStructureController extends Controller
     private function all($array, $type): bool
     {
         $arr = [
-            'text' => 'is_string',
-            'text_all_cap' => 'is_string',
-            'text_first_cap' => 'is_string',
-            'decimal' => 'is_numeric',
+            'string' => 'is_string',
+            'string_all_cap' => 'is_string',
+            'string_first_cap' => 'is_string',
+            'numeric' => 'is_numeric',
             'integer' => 'is_int',
         ];
         return array_filter($array, $arr[$type]) === $array;

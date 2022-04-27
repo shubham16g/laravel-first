@@ -36,7 +36,7 @@ class ProductController extends Controller
             ->groupBy('products.distinct_id');
         // ->where('all_tags.value', '=', 'M')
 
-        if ($sub_category != null || $s != null || $category != null || $variation != null|| $sub_variation != null) {
+        if ($sub_category != null || $s != null || $category != null || $variation != null || $sub_variation != null) {
             $products->orderBy(DB::raw('COUNT(connects_all_tags.all_tag_id)'), 'desc');
         }
 
@@ -103,62 +103,76 @@ class ProductController extends Controller
     public function addProduct(Request $request)
     {
 
-        // todo validation rule
-        $data = $request->validate([
+        $request->validate([
+            'sub_category' => 'required|string|max:100|exists:sub_categories,name',
+        ]);
 
+        $subCategory = SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->where('name', $request->sub_category)->first();
+
+        $variationInputType = preg_replace('/_.*/', '', $subCategory->variationStructure->input_type);
+        $subVariationInputType = 'string';
+        $subVariationInputList = '';
+        if ($subCategory->subVariationStructure != null) {
+            $subVariationInputType = preg_replace('/_.*/', '', $subCategory->subVariationStructure->input_type);
+            if ($subCategory->subVariationStructure->input_list != null) {
+                $subVariationInputList = '|in:' . implode(',', $subCategory->subVariationStructure->input_list);
+            }
+        }
+
+        $filterRules = [
+            'filters' => 'required|array',
+            'filters.Brand' => 'required|string|max:50',
+        ];
+        if ($subCategory->filterStructues != null) {
+            $filterRules['filters'] = 'required|array';
+            foreach ($subCategory->filterStructues as $filterStructure) {
+                $required = $filterStructure->is_required ? 'required|' : 'nullable|';
+                $inputList = ($filterStructure->input_list != null) ? '|in:' . implode(',', $filterStructure->input_list) : '';
+                $filterRules['filters.' . $filterStructure->name] = $required . preg_replace('/_.*/', '', $filterStructure->input_type) . $inputList;
+            }
+        }
+        // foreach ($subCategory->filterStructues as $filterStructure) {
+        // $filterRules[$filterStructure->name] = 'required|' . $filterStructure->input_type . $filterStructure->input_list;
+        // }
+
+        $request->merge([
+            'sub_variation' => $subCategory->sub_variation_structure != null ? 'mandatory' : 'not_mandatory',
+        ]);
+
+
+        $request->validate([
             'name' => 'required|string|max:100',
             'desc' => 'required|string|max:255',
 
-            'sub_category' => 'required|string|max:100|exists:sub_categories,name',
+            'tags' => 'array',
+            'tags.*' => 'required_with:tags|max:50',
 
-            'variation' => 'required|string|max:50',
+            'variation' => "required|$variationInputType|max:50",
 
-            'sub_variations' => 'nullable|array',
-            'sub_variations.*.name' => 'required_with:sub_variations|string|max:50',
+            'sub_variations' => 'required_if:sub_variation,mandatory|array',
+            'sub_variations.*.value' => "required_with:sub_variations|$subVariationInputType|max:50$subVariationInputList", //value instead of name
             'sub_variations.*.price' => 'required_with:sub_variations|numeric|min:0',
             'sub_variations.*.mrp' => 'required_with:sub_variations|gt:sub_variations.*.price|numeric|min:0',
 
 
-            'price' => 'required_without:sub_variations.0.price|numeric|min:0',
-            'mrp' => 'required_without:sub_variations.0.mrp|gt:price|numeric|min:0',
-
-            'tags' => 'required|array',
-            'tags.*' => 'required|max:50',
-
-            'filters' => 'required|array',
-            'filters.*.name' => 'required|exists:filter_structures,name',
-
-        ]);
-
-        $subCategory = SubCategory::with('filterStructues')->where('name', $data['sub_category'])->first();
+            'price' => 'required_if:sub_variation,not_mandatory|numeric|min:0',
+            'mrp' => 'required_with:price|gt:price|numeric|min:0',
 
 
-        if ($subCategory->is_sub_variations) {
-            if (!$request->sub_variations) {
-                return "wtfr";
-            } else {
-                foreach ($request->sub_variations as $sub_variation) {
-                    // array contains
-                    if (!in_array($sub_variation['name'], $subCategory->sub_variation_input_list)) {
-                        return "wtf";
-                    }
-                }
-            }
-        }
-        // todo check if sub_category group system and distinct system
 
-        return 'done';
+        ] + $filterRules);
 
         $allTags = [];
 
-        $allTags[AllTag::firstOrCreate(['value' => $data['name'], 'type' => 'name'])->all_tag_id] = true;
-        $allTags[AllTag::firstOrCreate(['value' => $data['desc'], 'type' => 'desc'])->all_tag_id] = true;
-        $allTags[AllTag::firstOrCreate(['value' => $data['sub_category'], 'type' => 'sub_category'])->all_tag_id] = true;
-        $allTags[AllTag::firstOrCreate(['value' => $data['variation'], 'type' => 'variation'])->all_tag_id] = true;
+        $allTags[AllTag::firstOrCreate(['value' => $request->name, 'type' => 'name'])->all_tag_id] = true;
+        $allTags[AllTag::firstOrCreate(['value' => $request->desc, 'type' => 'desc'])->all_tag_id] = true;
+        $allTags[AllTag::firstOrCreate(['value' => $request->sub_category, 'type' => 'sub_category'])->all_tag_id] = true;
+        $allTags[AllTag::firstOrCreate(['value' => $request->variation, 'type' => 'variation'])->all_tag_id] = true;
         // also need the unit of variation
-        foreach ($data['tags'] as $tag) {
-            $allTags[AllTag::firstOrCreate(['value' => $tag, 'type' => 'tag'])->all_tag_id] = true;
-        }
+        if ($request->tags)
+            foreach ($request->tags as $tag) {
+                $allTags[AllTag::firstOrCreate(['value' => $tag, 'type' => 'tag'])->all_tag_id] = true;
+            }
 
         $product = new Product();
         $currentProductID = $this->getNextId();
@@ -167,16 +181,23 @@ class ProductController extends Controller
 
         $product->save();
 
-        if (isset($data['sub_variations'])) {
+        if ($request->filters)
+            foreach ($request->filters as $filterName => $filterValue) {
+                if($filterValue == null) continue;
+                $allTags[AllTag::firstOrCreate(['value' => $filterValue, 'type' => $filterName])->all_tag_id] = true;
+            }
+
+
+        if (isset($request->sub_variations)) {
             $minMrp = 0;
             $minPrice = 0;
             $maxMrp = 0;
             $maxPrice = 0;
-            foreach ($data['sub_variations'] as $sub_variation) {
-                $allTags[AllTag::firstOrCreate(['value' => $sub_variation['name'], 'type' => 'sub_variation'])->all_tag_id] = true;
+            foreach ($request->sub_variations as $sub_variation) {
+                $allTags[AllTag::firstOrCreate(['value' => $sub_variation['value'], 'type' => 'sub_variation'])->all_tag_id] = true;
                 $subVariation = new SubVariation();
                 $subVariation->product_id = $currentProductID;
-                $subVariation->sub_variation = $sub_variation['name'];
+                $subVariation->sub_variation = $sub_variation['value'];
                 $subVariation->price = $sub_variation['price'];
                 $subVariation->mrp = $sub_variation['mrp'];
                 $subVariation->save();
@@ -194,10 +215,10 @@ class ProductController extends Controller
             $product->max_mrp = $maxMrp;
             $product->max_price = $maxPrice;
         } else {
-            $product->min_mrp = $data['mrp'];
-            $product->min_price = $data['price'];
-            $product->max_mrp = $data['mrp'];
-            $product->max_price = $data['price'];
+            $product->min_mrp = $request->mrp;
+            $product->min_price = $request->price;
+            $product->max_mrp = $request->mrp;
+            $product->max_price = $request->price;
         }
         $product->save();
 
