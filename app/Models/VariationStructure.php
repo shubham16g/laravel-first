@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FilterStructure extends Model
+class VariationStructure extends Model
 {
     use HasFactory;
 
     // primarykey
-    public $primaryKey = 'filter_structure_id';
+    public $primaryKey = 'variation_structure_id';
     public $timestamps = false;
 
     protected $hidden = [
