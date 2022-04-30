@@ -15,16 +15,14 @@ class FilterStructureController extends Controller
         ]);
         $request->validate([
             'name' => 'required|string|max:100|unique:filter_structures',
-            'type' => 'required|string|max:100|in:filter,variation,sub-variation',
-            'input_type' => 'required|string|max:100|in:string,string_all_cap,string_first_cap,numeric,integer',
+            'input_type' => 'required|string|max:100|in:string,string_all_cap,string_first_cap,numeric,integer,bool',
             'input_list' => 'nullable|array',
             'input_list.*' => 'required_with:input_list',
             'filter_type' => 'required_if:input_type,numeric,integer|string|max:100|in:fixed,range,fixed_range',
             'postfix' => 'nullable|string|max:100',
-            'prefix' => 'nullable|string|max:100',
-            'is_multiple_input' => 'boolean',
-            'is_required' => 'boolean',
-            'is_applicable' => 'boolean'
+            'is_multiple_input' => 'boolean'
+            /* 'is_required' => 'boolean',
+            'is_applicable' => 'boolean' */
         ]);
 
         // todo improve validation technique
@@ -39,23 +37,19 @@ class FilterStructureController extends Controller
 
         $filter = new FilterStructure();
         $filter->name = $request->name;
-        $filter->type = str_replace("-", "_", $type);
+        // $filter->type = str_replace("-", "_", $type);
         $filter->input_type = $request->input_type;
-        if ($request->type != 'variation')
-            $filter->input_list = $request->input_list;
+        $filter->input_list = $request->input_list;
         if ($request->has('filter_type') && ($request->input_type == 'numreic' || $request->input_type == 'integer'))
             $filter->filter_type = $request->filter_type;
         $filter->postfix = $request->postfix;
-        $filter->prefix = $request->prefix;
 
-        if ($request->type == 'filter') {
-            if ($request->has('is_multiple_input'))
-                $filter->is_multiple_input = $request->is_multiple_input;
-            if ($request->has('is_required'))
+        if ($request->has('is_multiple_input'))
+            $filter->is_multiple_input = $request->is_multiple_input;
+        /* if ($request->has('is_required'))
                 $filter->is_required = $request->is_required;
             if ($request->has('is_applicable'))
-                $filter->is_applicable = $request->is_applicable;
-        }
+                $filter->is_applicable = $request->is_applicable; */
         $filter->save();
 
         return response()->json(['message' => 'Filter Added Successfully']);
