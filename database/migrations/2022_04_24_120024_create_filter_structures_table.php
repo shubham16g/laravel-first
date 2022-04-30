@@ -13,6 +13,7 @@ class CreateFilterStructuresTable extends Migration
      */
     public function up()
     {
+        // need bool input_type, key
         Schema::create('filter_structures', function (Blueprint $table) {
             $table->id('filter_structure_id');
             $table->string('name', 100);

@@ -19,7 +19,7 @@ class FilterStructureController extends Controller
             'input_type' => 'required|string|max:100|in:string,string_all_cap,string_first_cap,numeric,integer',
             'input_list' => 'nullable|array',
             'input_list.*' => 'required_with:input_list',
-            'filter_type' => 'required|string|max:100|in:fixed,range,fixed_range',
+            'filter_type' => 'required_if:input_type,numeric,integer|string|max:100|in:fixed,range,fixed_range',
             'postfix' => 'nullable|string|max:100',
             'prefix' => 'nullable|string|max:100',
             'is_multiple_input' => 'boolean',
@@ -43,7 +43,8 @@ class FilterStructureController extends Controller
         $filter->input_type = $request->input_type;
         if ($request->type != 'variation')
             $filter->input_list = $request->input_list;
-        $filter->filter_type = $request->filter_type;
+        if ($request->has('filter_type') && ($request->input_type == 'numreic' || $request->input_type == 'integer'))
+            $filter->filter_type = $request->filter_type;
         $filter->postfix = $request->postfix;
         $filter->prefix = $request->prefix;
 
