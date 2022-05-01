@@ -22,6 +22,8 @@ class CreateFilterStructuresTable extends Migration
             $table->string('postfix', 100)->nullable();
             $table->string('prefix', 100)->nullable();
             $table->boolean('is_multiple_input')->default(false);
+            $table->boolean('is_required')->default(false);
+            $table->boolean('is_applicable')->default(false);
         });
     }
 

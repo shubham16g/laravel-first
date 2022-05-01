@@ -30,4 +30,19 @@ class SubVariationStructure extends Model
         return json_decode($value);
     }
 
+    // static function to create new SubVariationStructure
+    public static function store(string $name, string $input_type, ?array $input_list, ?string $extras, ?string $filter_type, ?string $postfix):SubVariationStructure
+    {
+        $filter = new SubVariationStructure();
+        $filter->name = $name;
+        $filter->input_type = $input_type;
+        $filter->input_list = $input_list;
+        $filter->extras = $extras;
+        if ($filter_type != null && ($input_type == 'numreic' || $input_type == 'integer'))
+        $filter->filter_type = $filter_type;
+        $filter->postfix = $postfix;
+        $filter->save();
+        return $filter;
+    }
+
 }

@@ -19,6 +19,7 @@ class CategoryController extends Controller
 
     public function addSubCategory(Request $request)
     {
+        // todo filter
         $request->validate([
             'name' => 'required|string|max:100|unique:sub_categories',
             'desc' => 'required|string|max:255',
@@ -26,15 +27,16 @@ class CategoryController extends Controller
             'type_values' => 'required_with:type|array',
             'type_values.*' => 'required_with:type|string|max:100',
 
-            'variation_structure' => 'required|integer|exists:variation_structures',
-            'sub_variation_structure' => 'nullable|integer|exists:sub_variation_structures',
+            'variation_structure' => 'required|integer|exists:variation_structures,variation_structure_id',
+            'sub_variation_structure' => 'nullable|integer|exists:sub_variation_structures,sub_variation_structure_id',
 
             'filter_structures' => 'nullable|array',
-            'filter_structures.*' => 'required_with:filter_structures|integer|exists:filter_structures',
+            'filter_structures.*' => 'required_with:filter_structures|integer|exists:filter_structures,filter_structure_id',
 
             'is_group_variations' => 'required|boolean',
             'is_show_variation_as_product' => 'required|boolean',
         ]);
+
 
 
         $subCategory = new SubCategory();
@@ -42,22 +44,15 @@ class CategoryController extends Controller
         $subCategory->desc = $request->desc;
         $subCategory->type = $request->type;
         $subCategory->type_values = $request->type_values;
-
-        $subCategory->variation_structure = VariationStructure::find($request->variation_structure)->first()->filter_structure_id;
-
-        return $subCategory;
-        $subCategory->sub_variation_structure = FilterStructure::where('name', $request->sub_variation_structure)->first()->filter_structure_id;
-
+        $subCategory->variation_structure = $request->variation_structure;
+        $subCategory->sub_variation_structure = $request->sub_variation_structure;
         $subCategory->is_group_variations = $request->is_group_variations;
         $subCategory->is_show_variation_as_product = $request->is_show_variation_as_product;
-
-        // return $subCategory;
         $subCategory->save();
 
         if ($request->has('filter_structures')) {
             $subCategory->filter_structures = $request->filter_structures;
-            foreach ($request->filter_structures as $filterName) {
-                $filterStructureId = FilterStructure::where('name', $filterName)->first()->filter_structure_id;
+            foreach ($request->filter_structures as $filterStructureId) {
                 ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $subCategory->sub_category_id, 'filter_structure_id' => $filterStructureId]);
             }
         }

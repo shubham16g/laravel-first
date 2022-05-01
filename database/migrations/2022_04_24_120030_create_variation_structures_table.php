@@ -19,7 +19,6 @@ class CreateVariationStructuresTable extends Migration
             $table->string('name', 100);
             $table->enum('input_type', ['string', 'string_all_cap', 'string_first_cap', 'numeric', 'integer']);
             $table->enum('extras', ['color', 'image'])->nullable();
-            $table->json('input_list')->nullable();
             $table->enum('filter_type', ['fixed', 'range', 'fixed_range']);
             $table->string('postfix', 100)->nullable();
         });

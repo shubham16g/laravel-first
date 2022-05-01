@@ -30,4 +30,18 @@ class VariationStructure extends Model
         return json_decode($value);
     }
 
+    // static function to create new VariationStructure
+    public static function store(string $name, string $input_type, ?string $extras, ?string $filter_type, ?string $postfix):VariationStructure
+    {
+        $filter = new VariationStructure();
+        $filter->name = $name;
+        $filter->input_type = $input_type;
+        $filter->extras = $extras;
+        if ($filter_type != null && ($input_type == 'numreic' || $input_type == 'integer'))
+            $filter->filter_type = $filter_type;
+        $filter->postfix = $postfix;
+        $filter->save();
+        return $filter;
+    }
+
 }
