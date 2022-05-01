@@ -31,9 +31,11 @@ class SubVariationStructure extends Model
     }
 
     // static function to create new SubVariationStructure
-    public static function store(string $name, string $input_type, ?array $input_list, ?string $extras, ?string $filter_type, ?string $postfix):SubVariationStructure
+    public static function store(string $name, string $input_type, ?array $input_list, ?string $extras, ?string $filter_type, ?string $postfix, int $id = 0):SubVariationStructure
     {
         $filter = new SubVariationStructure();
+        if ($id != 0)
+            $filter->sub_variation_structure_id = $id;
         $filter->name = $name;
         $filter->input_type = $input_type;
         $filter->input_list = $input_list;

@@ -31,9 +31,11 @@ class VariationStructure extends Model
     }
 
     // static function to create new VariationStructure
-    public static function store(string $name, string $input_type, ?string $extras, ?string $filter_type, ?string $postfix):VariationStructure
+    public static function store(string $name, string $input_type, ?string $extras, ?string $filter_type, ?string $postfix, int $id = 0):VariationStructure
     {
         $filter = new VariationStructure();
+        if ($id != 0)
+            $filter->variation_structure_id = $id;
         $filter->name = $name;
         $filter->input_type = $input_type;
         $filter->extras = $extras;

@@ -31,9 +31,11 @@ class FilterStructure extends Model
     }
 
     // static function to create new FilterStructure
-    public static function store(string $name, string $input_type, ?array $input_list, ?string $filter_type, ?string $postfix, ?bool $is_multiple_input, ?bool $is_required, ?bool $is_applicable):FilterStructure
+    public static function store(string $name, string $input_type, ?array $input_list, ?string $filter_type, ?string $postfix, ?bool $is_multiple_input, ?bool $is_required, ?bool $is_applicable, int $id = 0):FilterStructure
     {
         $filter = new FilterStructure();
+        if ($id != 0)
+            $filter->filter_structure_id = $id;
         $filter->name = $name;
         $filter->input_type = $input_type;
         $filter->input_list = $input_list;
