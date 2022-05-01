@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Structure\FilterStructure;
-use App\Models\Structure\SubVariationStructure;
-use App\Models\Structure\VariationStructure;
+use App\Models\FilterStructure;
+use App\Models\SubVariationStructure;
+use App\Models\VariationStructure;
 
 class StructureController extends Controller
 {

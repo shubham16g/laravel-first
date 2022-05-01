@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Structure;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,17 +17,17 @@ class FilterStructure extends Model
         'pivot',
     ];
 
+    protected $casts = [
+        'input_list' => 'array',
+        'is_required' => 'boolean',
+        'is_applicable' => 'boolean',
+        'is_multiple_input' => 'boolean',
+    ];
+
     public function setInputListAttribute($value)
     {
         if ($value != null)
             $this->attributes['input_list'] = json_encode($value);
-    }
-
-    public function getInputListAttribute($value)
-    {
-        if ($value == null)
-            return null;
-        return json_decode($value);
     }
 
     // static function to create new FilterStructure

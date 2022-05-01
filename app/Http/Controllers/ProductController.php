@@ -104,11 +104,11 @@ class ProductController extends Controller
     {
 
         $request->validate([
-            'sub_category' => 'required|string|max:100|exists:sub_categories,name',
+            'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
         ]);
 
-        $subCategory = SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->where('name', $request->sub_category)->first();
-
+        $subCategory = SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->where('name', 'Laptop')->first();
+return $subCategory;
         $variationInputType = preg_replace('/_.*/', '', $subCategory->variationStructure->input_type);
         $subVariationInputType = 'string';
         $subVariationInputList = '';
@@ -119,10 +119,8 @@ class ProductController extends Controller
             }
         }
 
-        $filterRules = [
-            'filters' => 'required|array',
-            'filters.Brand' => 'required|string|max:50',
-        ];
+        $filterRules = [];
+
         if ($subCategory->filterStructues != null) {
             $filterRules['filters'] = 'required|array';
             foreach ($subCategory->filterStructues as $filterStructure) {

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Structure\FilterStructure;
-use App\Models\Structure\SubVariationStructure;
-use App\Models\Structure\VariationStructure;
+use App\Models\FilterStructure;
+use App\Models\SubVariationStructure;
+use App\Models\VariationStructure;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

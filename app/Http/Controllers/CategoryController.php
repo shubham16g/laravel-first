@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConnectFilterSubCategory;
-use App\Models\Structure\FilterStructure;
+use App\Models\FilterStructure;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
-use App\Models\Structure\VariationStructure;
 
 class CategoryController extends Controller
 {
@@ -19,7 +18,6 @@ class CategoryController extends Controller
 
     public function addSubCategory(Request $request)
     {
-        // todo filter
         $request->validate([
             'name' => 'required|string|max:100|unique:sub_categories',
             'desc' => 'required|string|max:255',
@@ -63,55 +61,25 @@ class CategoryController extends Controller
     public function addFilterToSubCategory(Request $request)
     {
         $request->validate([
-            'sub_category_id' => 'integer|exists:sub_categories,sub_category_id',
-            'sub_category' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
-            'filter_structure_id' => 'integer|exists:filter_structures,filter_structure_id',
-            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filter_structures,name,type,filter',
+            'sub_category' => 'integer|exists:sub_categories,sub_category_id',
+            'filter_structure' => 'integer|exists:filter_structures,filter_structure_id',
         ]);
 
-        $subCategoryId = 0;
-        $filterStructureId = 0;
+        ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $request->sub_category, 'filter_structure_id' => $request->filter_structure]);
 
-        if ($request->has('sub_category_id'))
-            $subCategoryId = $request->sub_category_id;
-        else
-            $subCategoryId = SubCategory::where('name', $request->sub_category)->first()->sub_category_id;
-
-        if ($request->has('filter_structure_id'))
-            $filterStructureId = $request->filter_structure_id;
-        else
-            $filterStructureId = FilterStructure::where('name', $request->filter_structure)->first()->filter_structure_id;
-
-        ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $subCategoryId, 'filter_structure_id' => $filterStructureId]);
-
-        return response()->json(['message' => 'Filter Added Successfully']);
+        return response()->json(['message' => 'Filter Linked Successfully']);
     }
 
     public function removeFilterToSubCategory(Request $request)
     {
         $request->validate([
-            'sub_category_id' => 'integer|exists:sub_categories,sub_category_id',
-            'sub_category' => 'required_without:sub_category_id|string|max:100|exists:sub_categories,name',
-            'filter_structure_id' => 'integer|exists:filter_structures,filter_structure_id',
-            'filter_structure' => 'required_without:filter_structure_id|string|max:100|exists:filter_structures,name,type,filter',
+            'sub_category' => 'integer|exists:sub_categories,sub_category_id',
+            'filter_structure' => 'integer|exists:filter_structures,filter_structure_id',
         ]);
 
-        $subCategoryId = 0;
-        $filterStructureId = 0;
-
-        if ($request->has('sub_category_id'))
-            $subCategoryId = $request->sub_category_id;
-        else
-            $subCategoryId = SubCategory::where('name', $request->sub_category)->first()->sub_category_id;
-
-        if ($request->has('filter_structure_id'))
-            $filterStructureId = $request->filter_structure_id;
-        else
-            $filterStructureId = FilterStructure::where('name', $request->filter_structure)->first()->filter_structure_id;
-
-        $data = ConnectFilterSubCategory::find(['sub_category_id' => $subCategoryId, 'filter_structure_id' => $filterStructureId])->first();
+        $data = ConnectFilterSubCategory::find(['sub_category_id' => $request->sub_category, 'filter_structure_id' => $request->filter_structure])->first();
         if ($data != null)
             $data->delete();
-        return response()->json(['message' => 'Filter Removed Successfully']);
+        return response()->json(['message' => 'Filter Unlinked Successfully']);
     }
 }
