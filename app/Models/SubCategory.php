@@ -16,28 +16,28 @@ class SubCategory extends Model
 
     public function filterStructues()
     {
-        return $this->belongsToMany('App\Models\FilterStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure_id');
+        return $this->belongsToMany('App\Models\Structure\FilterStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure_id');
     }
 
     public function variationStructure()
     {
-        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'variation_structure')
-        ->select(['filter_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix', 'prefix']);
+        return $this->hasOne('App\Models\Structure\VariationStructure', 'variation_structure_id', 'variation_structure')
+        ->select(['variation_structure_id', 'name', 'input_type', 'filter_type', 'postfix',]);
     }
 
     public function subVariationStructure()
     {
-        return $this->hasOne('App\Models\FilterStructure', 'filter_structure_id', 'sub_variation_structure')
-        ->select(['filter_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix', 'prefix']);
+        return $this->hasOne('App\Models\Structure\SubVariationStructure', 'sub_variation_structure_id', 'sub_variation_structure')
+        ->select(['sub_variation_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix',]);
     }
 
-    public function setTypeValuesAttribute($value)
+    public function setTypeListAttribute($value)
     {
         if ($value != null)
-            $this->attributes['type_values'] = json_encode($value);
+            $this->attributes['type_list'] = json_encode($value);
     }
 
-    public function getTypeValuesAttribute($value)
+    public function getTypeListAttribute($value)
     {
         if ($value == null)
             return null;

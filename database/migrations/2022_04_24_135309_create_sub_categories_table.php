@@ -18,7 +18,7 @@ class CreateSubCategoriesTable extends Migration
             $table->string('name', 100);
             $table->string('desc', 255);
             $table->string('type', 100)->nullable();
-            $table->json('type_values')->nullable();
+            $table->json('type_list')->nullable();
 
             $table->unsignedBigInteger('variation_structure');
             $table->foreign('variation_structure')->references('variation_structure_id')->on('variation_structures');

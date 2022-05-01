@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConnectFilterSubCategory;
-use App\Models\FilterStructure;
+use App\Models\Structure\FilterStructure;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
-use App\Models\VariationStructure;
+use App\Models\Structure\VariationStructure;
 
 class CategoryController extends Controller
 {
@@ -24,8 +24,8 @@ class CategoryController extends Controller
             'name' => 'required|string|max:100|unique:sub_categories',
             'desc' => 'required|string|max:255',
             'type' => 'nullable|string|max:100',
-            'type_values' => 'required_with:type|array',
-            'type_values.*' => 'required_with:type|string|max:100',
+            'type_list' => 'required_with:type|array',
+            'type_list.*' => 'required_with:type|string|max:100',
 
             'variation_structure' => 'required|integer|exists:variation_structures,variation_structure_id',
             'sub_variation_structure' => 'nullable|integer|exists:sub_variation_structures,sub_variation_structure_id',
@@ -43,7 +43,7 @@ class CategoryController extends Controller
         $subCategory->name = $request->name;
         $subCategory->desc = $request->desc;
         $subCategory->type = $request->type;
-        $subCategory->type_values = $request->type_values;
+        $subCategory->type_list = $request->type_list;
         $subCategory->variation_structure = $request->variation_structure;
         $subCategory->sub_variation_structure = $request->sub_variation_structure;
         $subCategory->is_group_variations = $request->is_group_variations;

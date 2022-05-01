@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Structure;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,9 +13,9 @@ class FilterStructure extends Model
     public $primaryKey = 'filter_structure_id';
     public $timestamps = false;
 
-    // protected $hidden = [
-    //     'pivot',
-    // ];
+    protected $hidden = [
+        'pivot',
+    ];
 
     public function setInputListAttribute($value)
     {
