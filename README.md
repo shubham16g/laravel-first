@@ -11,11 +11,11 @@ when user decides to add new product, steps are:
 1. Choose Base-Category
 2. Choose Category
 3. Choose Sub-Category
-// all these are fetched from local storage and showed in dropdown or related ui.
+ all these are fetched from local storage and showed in dropdown or related ui.
 
 4. Load the projuct structure based on the sub-category from the server. Render the form based on the supplied data. After filling the form submit the data to the server.
 
-<!-- The from would contains the sub-variations if needed. The sub-variations ui is a new page (stack) and the items are added 
+ The from would contains the sub-variations if needed. The sub-variations ui is a new page (stack) and the items are added 
     are showed in products page. This can be edited and added multiple at once.  -->
 
 Note: Once the app is launched, it is very hard to edit the sub-category. For now, It's impossible.
