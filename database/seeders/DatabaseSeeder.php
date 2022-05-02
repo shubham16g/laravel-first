@@ -296,6 +296,7 @@ class DatabaseSeeder extends Seeder
         ]
     ];
 
+    public const subCategories = [];
 
     public function run()
     {
