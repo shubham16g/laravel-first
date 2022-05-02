@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 3,
@@ -83,7 +83,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 4,
@@ -105,7 +105,7 @@ class DatabaseSeeder extends Seeder
             'filter_type' => 'fixed',
             'is_multiple_input' => true,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 6,
@@ -116,7 +116,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => ' GB',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 7,
@@ -127,7 +127,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 8,
@@ -138,7 +138,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 9,
@@ -149,7 +149,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => ' GHz',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 10,
@@ -182,7 +182,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 13,
@@ -193,7 +193,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 14,
@@ -204,7 +204,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => ' GB',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 15,
@@ -215,7 +215,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 16,
@@ -226,7 +226,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => 'Nits',
             'is_multiple_input' => false,
             'is_required' => false,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 17,
@@ -237,7 +237,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => ' inch',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 18,
@@ -248,7 +248,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => ' Pixels',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 19,
@@ -259,7 +259,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => null,
             'is_multiple_input' => true,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 20,
@@ -281,7 +281,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => 'h',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ],
         [
             'id' => 22,
@@ -292,7 +292,7 @@ class DatabaseSeeder extends Seeder
             'postfix' => ' kg',
             'is_multiple_input' => false,
             'is_required' => true,
-            'is_applicable' => false
+            'is_applicable' => true
         ]
     ];
 

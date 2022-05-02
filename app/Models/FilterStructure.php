@@ -46,8 +46,12 @@ class FilterStructure extends Model
             $filter->is_multiple_input = $is_multiple_input;
         if($is_required != null)
             $filter->is_required = $is_required;
+        else
+            $filter->is_required = false;
         if($is_applicable != null)
             $filter->is_applicable = $is_applicable;
+        else
+            $filter->is_applicable = false;
         $filter->save();
         return $filter;
     }

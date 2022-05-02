@@ -108,7 +108,6 @@ class ProductController extends Controller
         ]);
 
         $subCategory = SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->where('name', 'Laptop')->first();
-return $subCategory;
         $variationInputType = preg_replace('/_.*/', '', $subCategory->variationStructure->input_type);
         $subVariationInputType = 'string';
         $subVariationInputList = '';
