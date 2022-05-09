@@ -2,13 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BaseCategory;
+use App\Models\Category;
 use App\Models\ConnectFilterSubCategory;
-use App\Models\FilterStructure;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
 
 class CategoryController extends Controller
 {
+
+    public function addBaseCategory(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:base_categories',
+            'icon' => 'required|string|max:255',
+            'image' => 'required|string|max:255',
+        ]);
+
+        BaseCategory::store($request->name, $request->icon, $request->image);
+
+        return response()->json(['message' => 'Base Category Added Successfully']);
+    }
+
+    public function addCategory(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories',
+            'icon' => 'required|string|max:255',
+            'image' => 'required|string|max:255',
+            'base_category' => 'required|integer|exists:base_categories,base_category_id',
+        ]);
+
+        Category::store($request->name, $request->icon, $request->image, $request->base_category);
+
+        return response()->json(['message' => 'Category Added Successfully']);
+    }
+
+    public function listBaseCategories()
+    {
+        return BaseCategory::all();
+    }
+
+    public function listCategories($baseCategoryId)
+    {
+        return Category::where('base_category_id', $baseCategoryId)->get();
+    }
 
 
     public function getSubCategories()

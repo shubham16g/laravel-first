@@ -31,6 +31,13 @@ Route::post('/filter-structure/', [StructureController::class, 'addFilterStructu
 Route::post('/variation-structure/', [StructureController::class, 'addVariationStructure']);
 Route::post('/sub-variation-structure/', [StructureController::class, 'addSubVariationStructure']);
 
+
+Route::get('/base-category', [CategoryController::class, 'listBaseCategories']);
+Route::post('/base-category', [CategoryController::class, 'addBaseCategory']);
+
+Route::get('/category/{baseCategoryId}', [CategoryController::class, 'listCategories']);
+Route::post('/category', [CategoryController::class, 'addCategory']);
+
 Route::get('/sub-category', [CategoryController::class, 'getSubCategories']);
 Route::post('/sub-category', [CategoryController::class, 'addSubCategory']);
 
