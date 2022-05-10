@@ -7,7 +7,6 @@ use App\Models\AllTag;
 use App\Models\ConnectsAllTag;
 use App\Models\Product;
 use App\Models\SubVariation;
-use Illuminate\Support\Facades\DB;
 
 class SubVariationController extends Controller
 {

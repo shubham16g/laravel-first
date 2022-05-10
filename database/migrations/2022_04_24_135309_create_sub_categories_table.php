@@ -17,6 +17,8 @@ class CreateSubCategoriesTable extends Migration
             $table->id('sub_category_id');
             $table->string('name', 100);
             $table->string('desc', 255);
+            $table->string('icon', 255);
+            $table->string('image', 255);
             $table->string('type', 100)->nullable();
             $table->json('type_list')->nullable();
 

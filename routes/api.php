@@ -35,10 +35,12 @@ Route::post('/sub-variation-structure/', [StructureController::class, 'addSubVar
 Route::get('/base-category', [CategoryController::class, 'listBaseCategories']);
 Route::post('/base-category', [CategoryController::class, 'addBaseCategory']);
 
-Route::get('/category/{baseCategoryId}', [CategoryController::class, 'listCategories']);
+Route::get('{baseCategoryId}/category/', [CategoryController::class, 'listCategories']);
 Route::post('/category', [CategoryController::class, 'addCategory']);
 
-Route::get('/sub-category', [CategoryController::class, 'getSubCategories']);
+Route::post('/category/link-sub-category', [CategoryController::class, 'linkSubCategoryToCategory']);
+
+Route::get('{categoryId}/sub-category', [CategoryController::class, 'getSubCategories']);
 Route::post('/sub-category', [CategoryController::class, 'addSubCategory']);
 
 

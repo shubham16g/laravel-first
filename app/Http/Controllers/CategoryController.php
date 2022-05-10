@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BaseCategory;
 use App\Models\Category;
 use App\Models\ConnectFilterSubCategory;
+use App\Models\ConnectSubCategory;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
 
@@ -49,9 +50,20 @@ class CategoryController extends Controller
     }
 
 
-    public function getSubCategories()
+    public function getSubCategories(Request $request, $categoryId)
     {
-        return SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->get();
+        $request->merge(['category_id' => $categoryId]);
+        $request->validate([
+            'category_id' => 'required|integer|exists:categories,category_id',
+        ]);
+
+        return SubCategory::leftJoin('connect_sub_categories', 'connect_sub_categories.sub_category_id', '=', 'sub_categories.sub_category_id')
+        ->join('categories', 'categories.category_id', '=', 'connect_sub_categories.category_id')
+        ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.desc', 'connect_sub_categories.type')
+        ->where('connect_sub_categories.category_id', $categoryId)
+        ->get();
+        
+        // return SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->get();
     }
 
     public function addSubCategory(Request $request)
@@ -59,6 +71,8 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:100|unique:sub_categories',
             'desc' => 'required|string|max:255',
+            'icon' => 'required|string|max:255',
+            'image' => 'required|string|max:255',
             'type' => 'nullable|string|max:100',
             'type_list' => 'required_with:type|array',
             'type_list.*' => 'required_with:type|string|max:100',
@@ -78,6 +92,8 @@ class CategoryController extends Controller
         $subCategory = new SubCategory();
         $subCategory->name = $request->name;
         $subCategory->desc = $request->desc;
+        $subCategory->icon = $request->icon;
+        $subCategory->image = $request->image;
         $subCategory->type = $request->type;
         $subCategory->type_list = $request->type_list;
         $subCategory->variation_structure = $request->variation_structure;
@@ -94,6 +110,38 @@ class CategoryController extends Controller
         }
 
         return response()->json(['message' => 'Sub Category Added Successfully']);
+    }
+
+    public function linkSubCategoryToCategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required|integer|exists:categories,category_id',
+            'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
+            // 'type' => 'nullable|string|max:100',
+        ]);
+
+
+        $subCategory = SubCategory::find($request->sub_category);
+        $typeRequired = "nullable";
+        $typeIn = '';
+        if ($subCategory->type_list != null) {
+            $typeRequired = "required";
+            $typeIn = '|in:' . implode(',', $subCategory->type_list);
+        }
+
+        $request->validate([
+            'type' => $typeRequired . '|string|max:100' . $typeIn,
+        ]);
+
+        $connect = ConnectSubCategory::firstOrCreate([
+            'category_id' => $request->category,
+            'sub_category_id' => $request->sub_category,
+            'type' => $request->type,
+        ]);
+
+        return response()->json(['message' => 'Sub Category Linked Successfully']);
+        // $connect->save();
+
     }
 
     public function addFilterToSubCategory(Request $request)
