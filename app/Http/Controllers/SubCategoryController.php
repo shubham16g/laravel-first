@@ -2,53 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BaseCategory;
-use App\Models\Category;
 use App\Models\ConnectFilterSubCategory;
-use App\Models\ConnectSubCategory;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
 
-class CategoryController extends Controller
+class SubCategoryController extends Controller
 {
 
-    public function addBaseCategory(Request $request)
-    {
+    public function getSubCategoryStructure(Request $request, $subCategoryId){
+        $request->merge(['sub_category' => $subCategoryId]);
         $request->validate([
-            'name' => 'required|string|max:255|unique:base_categories',
-            'icon' => 'required|string|max:255',
-            'image' => 'required|string|max:255',
+            'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
         ]);
 
-        BaseCategory::store($request->name, $request->icon, $request->image);
+        $subCategory = SubCategory::
+        select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.type', 'sub_categories.type_list', 'sub_categories.variation_structure', 'sub_categories.sub_variation_structure')->
+        with('variationStructure')->with('subVariationStructure')->with('filterStructues')->find($request->sub_category);
+        
+        $res = $subCategory->toArray();
+        unset($res['sub_category_id']);
 
-        return response()->json(['message' => 'Base Category Added Successfully']);
+        return $res;
     }
-
-    public function addCategory(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
-            'icon' => 'required|string|max:255',
-            'image' => 'required|string|max:255',
-            'base_category' => 'required|integer|exists:base_categories,base_category_id',
-        ]);
-
-        Category::store($request->name, $request->icon, $request->image, $request->base_category);
-
-        return response()->json(['message' => 'Category Added Successfully']);
-    }
-
-    public function listBaseCategories()
-    {
-        return BaseCategory::all();
-    }
-
-    public function listCategories($baseCategoryId)
-    {
-        return Category::where('base_category_id', $baseCategoryId)->get();
-    }
-
 
     public function getSubCategories(Request $request, $categoryId)
     {
@@ -110,36 +85,6 @@ class CategoryController extends Controller
         }
 
         return response()->json(['message' => 'Sub Category Added Successfully']);
-    }
-
-    public function linkSubCategoryToCategory(Request $request)
-    {
-        $request->validate([
-            'category' => 'required|integer|exists:categories,category_id',
-            'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
-            // 'type' => 'nullable|string|max:100',
-        ]);
-
-
-        $subCategory = SubCategory::find($request->sub_category);
-        $typeIn = '';
-        if ($subCategory->type_list != null) {
-            $typeIn = '|in:' . implode(',', $subCategory->type_list);
-        }
-
-        $request->validate([
-            'type' => 'nullable|string|max:100' . $typeIn,
-        ]);
-
-        ConnectSubCategory::firstOrCreate([
-            'category_id' => $request->category,
-            'sub_category_id' => $request->sub_category,
-            'type' => $request->type,
-        ]);
-
-        return response()->json(['message' => 'Sub Category Linked Successfully']);
-        // $connect->save();
-
     }
 
     public function addFilterToSubCategory(Request $request)

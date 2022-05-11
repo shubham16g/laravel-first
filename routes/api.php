@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\StructureController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SubVariationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,7 @@ Route::post('/category', [CategoryController::class, 'addCategory']);
 Route::post('/category/link-sub-category', [CategoryController::class, 'linkSubCategoryToCategory']);
 
 Route::get('{categoryId}/sub-category', [CategoryController::class, 'getSubCategories']);
+Route::get('/sub-category-structure/{subCategoryId}', [SubCategoryController::class, 'getSubCategoryStructure']);
 Route::post('/sub-category', [CategoryController::class, 'addSubCategory']);
 
 

@@ -22,7 +22,7 @@ class SubCategory extends Model
     public function variationStructure()
     {
         return $this->hasOne('App\Models\VariationStructure', 'variation_structure_id', 'variation_structure')
-        ->select(['variation_structure_id', 'name', 'input_type', 'filter_type', 'postfix',]);
+        ->select(['variation_structure_id', 'name', 'input_type', 'extras', 'filter_type', 'postfix',]);
     }
 
     public function subVariationStructure()
