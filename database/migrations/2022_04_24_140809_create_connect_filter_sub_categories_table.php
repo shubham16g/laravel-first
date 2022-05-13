@@ -17,9 +17,9 @@ class CreateConnectFilterSubCategoriesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('sub_category_id');
             $table->foreign('sub_category_id')->references('sub_category_id')->on('sub_categories');
-            $table->unsignedBigInteger('filter_structure_id');
-            $table->foreign('filter_structure_id')->references('filter_structure_id')->on('filter_structures');
-            $table->boolean('is_required')->default(true);
+            $table->unsignedBigInteger('filter_structure');
+            $table->foreign('filter_structure')->references('form_input_structure_id')->on('form_input_structures');
+            $table->string('name', 100);
             $table->boolean('is_applicable')->default(true);
         });
     }

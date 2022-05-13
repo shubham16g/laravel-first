@@ -16,19 +16,21 @@ class SubCategory extends Model
 
     public function filterStructues()
     {
-        return $this->belongsToMany('App\Models\FilterStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure_id');
+        // return $this->hasMany(ConnectFilterSubCategory::class, 'sub_category_id')->join('form_input_structures', 'connect_filter_sub_categories.filter_structure', '=', 'form_input_structures.form_input_structure_id')->select(['form_input_structures.*', 'connect_filter_sub_categories.name', 'connect_filter_sub_categories.is_applicable', 'connect_filter_sub_categories.sub_category_id']);
+        return $this->hasMany(ConnectFilterSubCategory::class, 'sub_category_id')->with('filterStructure');
+        // return $this->belongsToMany('App\Models\FormInputStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure');
     }
 
     public function variationStructure()
     {
-        return $this->hasOne('App\Models\VariationStructure', 'variation_structure_id', 'variation_structure')
-        ->select(['variation_structure_id', 'name', 'input_type', 'extras', 'filter_type', 'postfix',]);
+        return $this->hasOne('App\Models\FormInputStructure', 'form_input_structure_id', 'variation_structure')
+        ->select(['form_input_structure_id', 'name', 'input_type', 'filter_type', 'suffix',]);
     }
 
     public function subVariationStructure()
     {
-        return $this->hasOne('App\Models\SubVariationStructure', 'sub_variation_structure_id', 'sub_variation_structure')
-        ->select(['sub_variation_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'postfix',]);
+        return $this->hasOne('App\Models\FormInputStructure', 'form_input_structure_id', 'sub_variation_structure')
+        ->select(['form_input_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'suffix',]);
     }
 
     public function setTypeListAttribute($value)

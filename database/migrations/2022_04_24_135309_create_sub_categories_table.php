@@ -23,10 +23,10 @@ class CreateSubCategoriesTable extends Migration
             $table->json('type_list')->nullable();
 
             $table->unsignedBigInteger('variation_structure');
-            $table->foreign('variation_structure')->references('variation_structure_id')->on('variation_structures');
+            $table->foreign('variation_structure')->references('form_input_structure_id')->on('form_input_structures');
 
             $table->unsignedBigInteger('sub_variation_structure')->nullable();
-            $table->foreign('sub_variation_structure')->references('sub_variation_structure_id')->on('sub_variation_structures');
+            $table->foreign('sub_variation_structure')->references('form_input_structure_id')->on('form_input_structures');
 
             $table->boolean('is_group_variations')->default(true);
             $table->boolean('is_show_variation_as_product')->default(true);

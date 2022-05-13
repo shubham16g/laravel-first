@@ -5,7 +5,6 @@ use App\Http\Controllers\StructureController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SubVariationController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,9 +27,12 @@ Route::get('/', function(){
 
 });
 
-Route::post('/filter-structure/', [StructureController::class, 'addFilterStructure']);
-Route::post('/variation-structure/', [StructureController::class, 'addVariationStructure']);
-Route::post('/sub-variation-structure/', [StructureController::class, 'addSubVariationStructure']);
+/*  StrucutreController*/
+Route::post('/form-input-structure', [StructureController::class, 'addFormInputStructure']);
+Route::get('/form-input-structure', [StructureController::class, 'getFormInputStructures']);
+// Route::post('/filter-structure/', [StructureController::class, 'addFilterStructure']);
+// Route::post('/variation-structure/', [StructureController::class, 'addVariationStructure']);
+// Route::post('/sub-variation-structure/', [StructureController::class, 'addSubVariationStructure']);
 
 
 Route::get('/base-category', [CategoryController::class, 'listBaseCategories']);
@@ -41,13 +43,13 @@ Route::post('/category', [CategoryController::class, 'addCategory']);
 
 Route::post('/category/link-sub-category', [CategoryController::class, 'linkSubCategoryToCategory']);
 
-Route::get('{categoryId}/sub-category', [CategoryController::class, 'getSubCategories']);
+Route::get('{categoryId}/sub-category', [SubCategoryController::class, 'getSubCategories']);
 Route::get('/sub-category-structure/{subCategoryId}', [SubCategoryController::class, 'getSubCategoryStructure']);
-Route::post('/sub-category', [CategoryController::class, 'addSubCategory']);
+Route::post('/sub-category', [SubCategoryController::class, 'addSubCategory']);
 
 
-Route::post('/sub-category/add-filter-structure', [CategoryController::class, 'addFilterToSubCategory']);
-Route::post('/sub-category/remove-filter-structure', [CategoryController::class, 'removeFilterToSubCategory']);
+Route::post('/sub-category/add-filter-structure', [SubCategoryController::class, 'addFilterToSubCategory']);
+Route::post('/sub-category/remove-filter-structure', [SubCategoryController::class, 'removeFilterToSubCategory']);
 
 Route::post('/product', [ProductController::class, 'addProduct']);
 Route::post('/sub_variation', [SubVariationController::class, 'addSubVariation']);

@@ -9,16 +9,20 @@ use App\Models\SubCategory;
 class SubCategoryController extends Controller
 {
 
-    public function getSubCategoryStructure(Request $request, $subCategoryId){
+    public function getSubCategoryStructure(Request $request, $subCategoryId)
+    {
         $request->merge(['sub_category' => $subCategoryId]);
         $request->validate([
             'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
         ]);
 
-        $subCategory = SubCategory::
-        select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.type', 'sub_categories.type_list', 'sub_categories.variation_structure', 'sub_categories.sub_variation_structure')->
-        with('variationStructure')->with('subVariationStructure')->with('filterStructues')->find($request->sub_category);
-        
+        $subCategory = SubCategory::with('variationStructure')
+            ->with('subVariationStructure')
+            // ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.type', 'sub_categories.type_list', 'sub_categories.variation_structure', 'sub_categories.sub_variation_structure')
+            // ->leftJoin('connect_sub_categories', 'connect_sub_categories.sub_category_id', '=', 'sub_categories.sub_category_id')
+            ->with('filterStructues')
+            ->find($request->sub_category);
+
         $res = $subCategory->toArray();
         unset($res['sub_category_id']);
 
@@ -33,11 +37,11 @@ class SubCategoryController extends Controller
         ]);
 
         return SubCategory::leftJoin('connect_sub_categories', 'connect_sub_categories.sub_category_id', '=', 'sub_categories.sub_category_id')
-        ->join('categories', 'categories.category_id', '=', 'connect_sub_categories.category_id')
-        ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.desc', 'sub_categories.icon', 'sub_categories.image', 'connect_sub_categories.type')
-        ->where('connect_sub_categories.category_id', $categoryId)
-        ->get();
-        
+            ->join('categories', 'categories.category_id', '=', 'connect_sub_categories.category_id')
+            ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.desc', 'sub_categories.icon', 'sub_categories.image', 'connect_sub_categories.type')
+            ->where('connect_sub_categories.category_id', $categoryId)
+            ->get();
+
         // return SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->get();
     }
 
@@ -52,11 +56,13 @@ class SubCategoryController extends Controller
             'type_list' => 'required_with:type|array',
             'type_list.*' => 'required_with:type|string|max:100',
 
-            'variation_structure' => 'required|integer|exists:variation_structures,variation_structure_id',
-            'sub_variation_structure' => 'nullable|integer|exists:sub_variation_structures,sub_variation_structure_id',
+            'variation_structure' => 'required|integer|exists:form_input_structures,form_input_structure_id',
+            'sub_variation_structure' => 'nullable|integer|exists:form_input_structures,form_input_structure_id',
 
             'filter_structures' => 'nullable|array',
-            'filter_structures.*' => 'required_with:filter_structures|integer|exists:filter_structures,filter_structure_id',
+            'filter_structures.*.id' => 'required_with:filter_structures|integer|exists:form_input_structures,form_input_structure_id',
+            'filter_structures.*.name' => 'required_with:filter_structures|string|max:100',
+            'filter_structures.*.is_applicable' => 'boolean',
 
             'is_group_variations' => 'required|boolean',
             'is_show_variation_as_product' => 'required|boolean',
@@ -78,15 +84,21 @@ class SubCategoryController extends Controller
         $subCategory->save();
 
         if ($request->has('filter_structures')) {
-            $subCategory->filter_structures = $request->filter_structures;
-            foreach ($request->filter_structures as $filterStructureId) {
-                ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $subCategory->sub_category_id, 'filter_structure_id' => $filterStructureId]);
+            foreach ($request->filter_structures as $filterStructure) {
+                $is_applicable = isset($filterStructure['is_applicable']) ? $filterStructure['is_applicable'] : false;
+                ConnectFilterSubCategory::firstOrCreate([
+                    'sub_category_id' => $subCategory->sub_category_id,
+                    'filter_structure' => $filterStructure['id'],
+                    'name' => $filterStructure['name'],
+                    'is_applicable' => $is_applicable,
+                ]);
             }
         }
 
         return response()->json(['message' => 'Sub Category Added Successfully']);
     }
 
+    // todo
     public function addFilterToSubCategory(Request $request)
     {
         $request->validate([
@@ -99,6 +111,7 @@ class SubCategoryController extends Controller
         return response()->json(['message' => 'Filter Linked Successfully']);
     }
 
+    // 
     public function removeFilterToSubCategory(Request $request)
     {
         $request->validate([

@@ -15,6 +15,23 @@ class ConnectFilterSubCategory extends Model
     // fillable
     protected $fillable = [
         'sub_category_id',
-        'filter_structure_id',
+        'filter_structure',
+        'name',
+        'is_applicable',
     ];
+
+    protected $casts = [
+        'is_applicable' => 'boolean',
+    ];
+
+    protected $hidden = [
+        'pivot',
+        'id',
+        'sub_category_id',
+    ];
+
+    public function filterStructure()
+    {
+        return $this->belongsTo('App\Models\FormInputStructure', 'filter_structure');
+    }
 }

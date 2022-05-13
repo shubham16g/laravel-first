@@ -5,16 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SubVariationStructure extends Model
+class FormInputStructure extends Model
 {
     use HasFactory;
 
     // primarykey
-    public $primaryKey = 'sub_variation_structure_id';
+    public $primaryKey = 'form_input_structure_id';
     public $timestamps = false;
 
     protected $hidden = [
         'pivot',
+    ];
+
+    protected $casts = [
+        'input_list' => 'array',
+        'is_required' => 'boolean',
+        'is_multiple_input' => 'boolean',
     ];
 
     public function setInputListAttribute($value)
@@ -23,28 +29,19 @@ class SubVariationStructure extends Model
             $this->attributes['input_list'] = json_encode($value);
     }
 
-    public function getInputListAttribute($value)
+    /* public static function store(string $name, string $input_type, ?string $extras, ?string $filter_type, ?string $postfix, int $id = 0):VariationStructure
     {
-        if ($value == null)
-            return null;
-        return json_decode($value);
-    }
-
-    // static function to create new SubVariationStructure
-    public static function store(string $name, string $input_type, ?array $input_list, ?string $extras, ?string $filter_type, ?string $postfix, int $id = 0):SubVariationStructure
-    {
-        $filter = new SubVariationStructure();
+        $filter = new VariationStructure();
         if ($id != 0)
-            $filter->sub_variation_structure_id = $id;
+            $filter->variation_structure_id = $id;
         $filter->name = $name;
         $filter->input_type = $input_type;
-        $filter->input_list = $input_list;
         $filter->extras = $extras;
         if ($filter_type != null && ($input_type == 'numreic' || $input_type == 'integer'))
-        $filter->filter_type = $filter_type;
+            $filter->filter_type = $filter_type;
         $filter->postfix = $postfix;
         $filter->save();
         return $filter;
-    }
+    } */
 
 }
