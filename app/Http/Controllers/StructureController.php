@@ -40,7 +40,7 @@ class StructureController extends Controller
             if ($request->input_min_lines)
                 $formInputStructure->input_min_lines = $request->input_min_lines;
         }
-        if ($request->input_type == 'string') 
+        if ($request->input_type == 'string' && $request->has('string_capitalization')) 
             $formInputStructure->string_capitalization = $request->string_capitalization;
         $formInputStructure->input_list = $request->input_list;
         if ($request->filter_type != null && ($request->input_type == 'numreic' || $request->input_type == 'integer'))

@@ -2,294 +2,294 @@
 
 namespace Database\Seeders;
 
-use App\Models\FilterStructure;
-use App\Models\SubVariationStructure;
-use App\Models\VariationStructure;
+use App\Models\FormInputStructure;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
 
 
-    private const variationStructureData = [
+    /* private const variationStructureData = [
         [
-            'id' => 1,
             'name' => 'Color',
             'input_type' => 'string',
             'extras' => 'color',
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
         ],
         [
-            'id' => 2,
             'name' => 'Color',
             'input_type' => 'string',
             'extras' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
         ],
     ];
 
     private const subVariationStructureData = [
         [
-            'id' => 1,
             'name' => 'Size',
-            'input_type' => 'string_all_cap',
+            'input_type' => 'string',
+            
             'input_list' => ['S', 'M', 'L', 'XL', 'XXL'],
             'extras' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
         ],
         [
-            'id' => 2,
             'name' => 'Storage Type',
             'input_type' => 'string',
             'input_list' => null,
             'extras' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
         ],
-    ];
+    ]; */
 
     private const filterStructureData = [
         [
-            'id' => 1,
+            'name' => 'Name',
+            'input_type' => 'string',
+            'string_capitalization' => 'sentences',
+            'filter_type' => 'fixed',
+            'is_required' => true,
+        ],
+        [
+            'name' => 'Description',
+            'input_max_lines' => 5,
+            'input_min_lines' => 2,
+            'input_type' => 'string',
+            'string_capitalization' => 'sentences',
+            'filter_type' => 'fixed',
+            'is_required' => true,
+        ],
+
+
+        [
             'name' => 'Brand',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true,
         ],
         [
-            'id' => 2,
             'name' => 'Manufacturer',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 3,
             'name' => 'Processor Type',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 4,
             'name' => 'Processor Model',
             'input_type' => 'string',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => false
         ],
         [
-            'id' => 5,
             'name' => 'Laptop Usage',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'list',
             'input_list' => ['Gaming', 'Office', 'Multimedia', 'Student'],
-            'postfix' => null,
+            'suffix' => null,
             'filter_type' => 'fixed',
             'is_multiple_input' => true,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 6,
             'name' => 'RAM',
             'input_type' => 'integer',
             'input_list' => null,
             'filter_type' => 'fixed_range',
-            'postfix' => ' GB',
+            'suffix' => ' GB',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 7,
             'name' => 'RAM Memory Technology',
-            'input_type' => 'string_all_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'characters',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 8,
             'name' => 'Processor Brand',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 9,
             'name' => 'Processor Speed',
             'input_type' => 'numeric',
             'input_list' => null,
             'filter_type' => 'range',
-            'postfix' => ' GHz',
+            'suffix' => ' GHz',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 10,
             'name' => 'Processor Count',
             'input_type' => 'integer',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => false,
             'is_applicable' => false,
         ],
         [
-            'id' => 11,
             'name' => 'Maximum RAM Supported',
             'input_type' => 'integer',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => ' GB',
+            'suffix' => ' GB',
             'is_multiple_input' => false,
             'is_required' => false,
             'is_applicable' => false,
         ],
         [
-            'id' => 12,
             'name' => 'Operating System',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 13,
             'name' => 'Storage Type',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 14,
             'name' => 'Storage Size',
             'input_type' => 'integer',
             'input_list' => null,
             'filter_type' => 'range',
-            'postfix' => ' GB',
+            'suffix' => ' GB',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 15,
             'name' => 'Graphics Card',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 16,
             'name' => 'Brightness',
             'input_type' => 'integer',
             'input_list' => null,
             'filter_type' => 'range',
-            'postfix' => 'Nits',
+            'suffix' => 'Nits',
             'is_multiple_input' => false,
             'is_required' => false,
             'is_applicable' => true
         ],
         [
-            'id' => 17,
             'name' => 'Display Size',
             'input_type' => 'numeric',
             'input_list' => null,
             'filter_type' => 'range',
-            'postfix' => ' inch',
+            'suffix' => ' inch',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 18,
             'name' => 'Display Resoulution',
             'input_type' => 'string',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => ' Pixels',
+            'suffix' => ' Pixels',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 19,
             'name' => 'Biometric Security',
-            'input_type' => 'string_first_cap',
+            'input_type' => 'string',
+            'string_capitalization' => 'words',
             'input_list' => null,
             'filter_type' => 'fixed',
-            'postfix' => null,
+            'suffix' => null,
             'is_multiple_input' => true,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 20,
             'name' => 'Laptop Graphics Memory',
             'input_type' => 'integer',
             'input_list' => null,
             'filter_type' => 'fixed_range',
-            'postfix' => ' GB',
+            'suffix' => ' GB',
             'is_multiple_input' => false,
             'is_required' => false,
             'is_applicable' => false
         ],
         [
-            'id' => 21,
             'name' => 'Laptop Battery Life',
             'input_type' => 'numeric',
             'input_list' => null,
             'filter_type' => 'fixed_range',
-            'postfix' => 'h',
+            'suffix' => 'h',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
         ],
         [
-            'id' => 22,
             'name' => 'Laptop Weight',
             'input_type' => 'numeric',
             'input_list' => null,
             'filter_type' => 'fixed_range',
-            'postfix' => ' kg',
+            'suffix' => ' kg',
             'is_multiple_input' => false,
             'is_required' => true,
             'is_applicable' => true
@@ -300,17 +300,39 @@ class DatabaseSeeder extends Seeder
 
     public function run()
     {
-        foreach (self::variationStructureData as $var) {
-            $var = (object)$var;
-            VariationStructure::store($var->name, $var->input_type, $var->extras, $var->filter_type, $var->postfix, $var->id);
-        }
-        foreach ((object)self::subVariationStructureData as $var) {
-            $var = (object)$var;
-            SubVariationStructure::store($var->name, $var->input_type, $var->input_list, $var->extras, $var->filter_type, $var->postfix, $var->id);
-        }
         foreach ((object)self::filterStructureData as $var) {
-            $var = (object)$var;
-            FilterStructure::store($var->name, $var->input_type, $var->input_list, $var->filter_type, $var->postfix, $var->is_multiple_input,$var->is_required, $var->is_applicable, $var->id);
+            $this->store((object)$var);
+
+            // FilterStructure::store($var->name, $var->input_type, $var->input_list, $var->filter_type, $var->suffix, $var->is_multiple_input,$var->is_required, $var->is_applicable, $var->id);
         }
+    }
+
+    private function store(object $request){
+        if(FormInputStructure::where('name', $request->name)->exists()){
+            return;
+        }
+        $formInputStructure = new FormInputStructure();
+        $formInputStructure->name = $request->name;
+        $formInputStructure->input_type = $request->input_type;
+        if ($request->input_type == 'string' || $request->input_type == 'email' || $request->input_type == 'phone' || $request->input_type == 'password') {
+            if (isset($request->input_max_length))
+                $formInputStructure->input_max_length = $request->input_max_length;
+            if (isset($request->input_min_length))
+                $formInputStructure->input_min_length = $request->input_min_length;
+            if (isset($request->input_max_lines))
+                $formInputStructure->input_max_lines = $request->input_max_lines;
+            if (isset($request->input_min_lines))
+                $formInputStructure->input_min_lines = $request->input_min_lines;
+        }
+        if ($request->input_type == 'string' && isset($request->string_capitalization))
+        $formInputStructure->string_capitalization = $request->string_capitalization;
+        $formInputStructure->input_list = $request->input_list ?? null;
+        if ($request->filter_type != null && ($request->input_type == 'numreic' || $request->input_type == 'integer'))
+        $formInputStructure->filter_type = $request->filter_type;
+        $formInputStructure->suffix = $request->suffix ?? null;
+        $formInputStructure->prefix = $request->prefix ?? null;
+        $formInputStructure->is_multiple_input = $request->is_multiple_input ?? false;
+        $formInputStructure->is_required = $request->is_required ?? true;
+        $formInputStructure->save();
     }
 }

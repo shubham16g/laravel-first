@@ -35,6 +35,7 @@ class SubCategoryController extends Controller
             ->select(['form_input_structures.*', 'connect_filter_sub_categories.name'])
             ->get();
 
+        
 
 
         return [
