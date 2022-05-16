@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConnectFilterSubCategory;
+use App\Models\FormInputStructure;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
 
@@ -16,17 +17,31 @@ class SubCategoryController extends Controller
             'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
         ]);
 
-        $subCategory = SubCategory::with('variationStructure')
-            ->with('subVariationStructure')
-            // ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.type', 'sub_categories.type_list', 'sub_categories.variation_structure', 'sub_categories.sub_variation_structure')
-            // ->leftJoin('connect_sub_categories', 'connect_sub_categories.sub_category_id', '=', 'sub_categories.sub_category_id')
-            ->with('filterStructues')
-            ->find($request->sub_category);
+        // $subCategory = SubCategory::with('variationStructure')
+        //     ->with('subVariationStructure')
+        //     // ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.type', 'sub_categories.type_list', 'sub_categories.variation_structure', 'sub_categories.sub_variation_structure')
+        //     // ->leftJoin('connect_sub_categories', 'connect_sub_categories.sub_category_id', '=', 'sub_categories.sub_category_id')
+        //     ->with('filterStructues')
+        //     ->find($request->sub_category);
 
-        $res = $subCategory->toArray();
-        unset($res['sub_category_id']);
+        // $res = $subCategory->toArray();
+        // unset($res['sub_category_id']);
 
-        return $res;
+        $subCategory = SubCategory::find($request->sub_category);
+
+        $filterStructures = FormInputStructure::
+        leftJoin('connect_filter_sub_categories', 'connect_filter_sub_categories.filter_structure', '=', 'form_input_structures.form_input_structure_id')
+            ->where('connect_filter_sub_categories.sub_category_id', $subCategoryId)
+            ->select(['form_input_structures.*', 'connect_filter_sub_categories.name'])
+            ->get();
+
+
+
+        return [
+            'variation_structure' => $subCategory->variationStructure,
+            'sub_variation_structure' => $subCategory->subVariationStructure,
+            'filter_structures' => $filterStructures,
+        ];
     }
 
     public function getSubCategories(Request $request, $categoryId)

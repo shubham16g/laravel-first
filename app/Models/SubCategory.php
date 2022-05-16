@@ -23,15 +23,20 @@ class SubCategory extends Model
 
     public function variationStructure()
     {
-        return $this->hasOne('App\Models\FormInputStructure', 'form_input_structure_id', 'variation_structure')
-        ->select(['form_input_structure_id', 'name', 'input_type', 'filter_type', 'suffix',]);
+        return $this->hasOne('App\Models\FormInputStructure', 'form_input_structure_id', 'variation_structure');
     }
 
     public function subVariationStructure()
     {
-        return $this->hasOne('App\Models\FormInputStructure', 'form_input_structure_id', 'sub_variation_structure')
-        ->select(['form_input_structure_id', 'name', 'input_type', 'input_list', 'filter_type', 'suffix',]);
+        return $this->hasOne('App\Models\FormInputStructure', 'form_input_structure_id', 'sub_variation_structure');
     }
+
+    protected $casts = [
+        'is_group_variations' => 'boolean',
+        'is_show_variation_as_product' => 'boolean',
+        'type_list' => 'array',
+
+    ];
 
     public function setTypeListAttribute($value)
     {
@@ -39,10 +44,10 @@ class SubCategory extends Model
             $this->attributes['type_list'] = json_encode($value);
     }
 
-    public function getTypeListAttribute($value)
-    {
-        if ($value == null)
-            return null;
-        return json_decode($value);
-    }
+    // public function getTypeListAttribute($value)
+    // {
+    //     if ($value == null)
+    //         return null;
+    //     return json_decode($value);
+    // }
 }
