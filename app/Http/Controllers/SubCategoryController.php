@@ -7,6 +7,8 @@ use App\Models\FormInputStructure;
 use Illuminate\Http\Request;
 use App\Models\SubCategory;
 
+// todo change migrateion to add key column
+// todo remove form_input_structure_id form every items
 class SubCategoryController extends Controller
 {
 
@@ -16,31 +18,61 @@ class SubCategoryController extends Controller
         $request->validate([
             'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
         ]);
-
-        // $subCategory = SubCategory::with('variationStructure')
-        //     ->with('subVariationStructure')
-        //     // ->select('sub_categories.sub_category_id', 'sub_categories.name', 'sub_categories.type', 'sub_categories.type_list', 'sub_categories.variation_structure', 'sub_categories.sub_variation_structure')
-        //     // ->leftJoin('connect_sub_categories', 'connect_sub_categories.sub_category_id', '=', 'sub_categories.sub_category_id')
-        //     ->with('filterStructues')
-        //     ->find($request->sub_category);
-
-        // $res = $subCategory->toArray();
-        // unset($res['sub_category_id']);
-
         $subCategory = SubCategory::find($request->sub_category);
 
-        $filterStructures = FormInputStructure::
-        leftJoin('connect_filter_sub_categories', 'connect_filter_sub_categories.filter_structure', '=', 'form_input_structures.form_input_structure_id')
+        $filterStructures = FormInputStructure::leftJoin('connect_filter_sub_categories', 'connect_filter_sub_categories.filter_structure', '=', 'form_input_structures.form_input_structure_id')
             ->where('connect_filter_sub_categories.sub_category_id', $subCategoryId)
-            ->select(['form_input_structures.*', 'connect_filter_sub_categories.name'])
+            ->select(['form_input_structures.*', 'connect_filter_sub_categories.name', 'connect_filter_sub_categories.name as key'])
             ->get();
-
         
+        $basicDetails = FormInputStructure::whereIn('name', ['Name','Description','Tags'])->get()->toArray();
+        $basicDetails[0]['key'] = 'name';
+        $basicDetails[1]['key'] = 'desc';
+        $basicDetails[2]['key'] = 'tags';
+
+        $priceSts = FormInputStructure::whereIn('name', ['MRP', 'Price'])->get()->toArray();
+        $priceSts[0]['key'] = 'price';
+        $priceSts[1]['key'] = 'mrp';
+
+        $variationSts = [array_merge($subCategory->variationStructure->toArray(), ['key' => 'variation'])];
+
+        if ($subCategory->type != null) {
+            $variationSts[] = [
+                "name" => $subCategory->type,
+                "input_type" => "list",
+                "input_max_length" => 255,
+                "input_min_length" => 0,
+                "input_max_lines" => 2,
+                "input_min_lines" => 1,
+                "string_capitalization" => "none",
+                "input_list" => $subCategory->type_list,
+                "filter_type" => "fixed",
+                "suffix" => null,
+                "prefix" => null,
+                "is_multiple_input" => true,
+                "is_required" => true,
+                "key" => "type"
+            ];
+        }
+
+
+        $subVariationSt = $subCategory->subVariationStructure;
+
+        $subVariationSts = null;
+
+        if ($subVariationSt == null) {
+            $variationSts = array_merge($variationSts, $priceSts);
+        } else {
+            $subVariationSts = array_merge([array_merge($subVariationSt->toArray(), ['key' => 'sub_variation'])], $priceSts);
+        }
 
 
         return [
-            'variation_structure' => $subCategory->variationStructure,
-            'sub_variation_structure' => $subCategory->subVariationStructure,
+            'detail_structures' => $basicDetails, 
+            'variation_structures' => $variationSts,
+            'sub_variation_structures' => $subVariationSts,
+            // 'variation_structure' => array_merge(->toArray(), ['key' => 'variation']),
+            // 'sub_variation_structure' => array_merge(, ['key' => 'sub_variation']),
             'filter_structures' => $filterStructures,
         ];
     }

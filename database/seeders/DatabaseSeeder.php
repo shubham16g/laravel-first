@@ -7,45 +7,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-
-
-    /* private const variationStructureData = [
-        [
-            'name' => 'Color',
-            'input_type' => 'string',
-            'extras' => 'color',
-            'filter_type' => 'fixed',
-            'suffix' => null,
-        ],
-        [
-            'name' => 'Color',
-            'input_type' => 'string',
-            'extras' => null,
-            'filter_type' => 'fixed',
-            'suffix' => null,
-        ],
-    ];
-
-    private const subVariationStructureData = [
-        [
-            'name' => 'Size',
-            'input_type' => 'string',
-            
-            'input_list' => ['S', 'M', 'L', 'XL', 'XXL'],
-            'extras' => null,
-            'filter_type' => 'fixed',
-            'suffix' => null,
-        ],
-        [
-            'name' => 'Storage Type',
-            'input_type' => 'string',
-            'input_list' => null,
-            'extras' => null,
-            'filter_type' => 'fixed',
-            'suffix' => null,
-        ],
-    ]; */
-
     private const filterStructureData = [
         [
             'name' => 'Name',
@@ -63,8 +24,47 @@ class DatabaseSeeder extends Seeder
             'filter_type' => 'fixed',
             'is_required' => true,
         ],
-
-
+        [
+            'name' => 'Tags',
+            'input_max_lines' => 5,
+            'input_min_lines' => 2,
+            'input_type' => 'string',
+            'string_capitalization' => 'none',
+            'filter_type' => 'fixed',
+            'is_required' => false,
+        ],
+        [
+            'name' => 'Price',
+            'input_type' => 'numeric',
+            'filter_type' => 'range',
+        ],
+        [
+            'name' => 'MRP',
+            'input_type' => 'numeric',
+            'filter_type' => 'range',
+        ],
+        [
+            'name' => 'Size',
+            'input_type' => 'list',
+            'input_list' => ['S', 'M', 'L', 'XL', 'XXL'],
+            'filter_type' => 'fixed',
+            'is_multiple_input' => true,
+        ],
+        [
+            'name' => 'Color Code',
+            'input_type' => 'color',
+            'filter_type' => 'fixed',
+        ],
+        [
+            'name' => 'Color',
+            'input_type' => 'string',
+            'filter_type' => 'fixed',
+        ],
+        [
+            'name' => 'Storage Type',
+            'input_type' => 'string',
+            'filter_type' => 'fixed',
+        ],
         [
             'name' => 'Brand',
             'input_type' => 'string',
