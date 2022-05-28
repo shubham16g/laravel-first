@@ -16,6 +16,7 @@ class SubCategory extends Model
 
     public function filterStructues()
     {
+        return $this->belongsToMany('App\Models\FormInputStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure');   
         // return $this->hasMany(ConnectFilterSubCategory::class, 'sub_category_id')->join('form_input_structures', 'connect_filter_sub_categories.filter_structure', '=', 'form_input_structures.form_input_structure_id')->select(['form_input_structures.*', 'connect_filter_sub_categories.name', 'connect_filter_sub_categories.is_applicable', 'connect_filter_sub_categories.sub_category_id']);
         return $this->hasMany(ConnectFilterSubCategory::class, 'sub_category_id')->with('filterStructure');
         // return $this->belongsToMany('App\Models\FormInputStructure', 'connect_filter_sub_categories', 'sub_category_id', 'filter_structure');

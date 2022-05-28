@@ -107,12 +107,21 @@ class ProductController extends Controller
             'sub_category' => 'required|integer|exists:sub_categories,sub_category_id',
         ]);
 
-        $subCategory = SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->where('name', 'Laptop')->first();
+        $subCategory = SubCategory::with('filterStructues')->with('variationStructure')->with('subVariationStructure')->find($request->sub_category);
+        
+        // return $subCategory->variationStructure;
+
+        $typeValidation = [];
+        if ($subCategory->type_list != null) {
+            $typeValidation['sub_category_type'] = 'required|array';
+            $typeValidation['sub_category_type.*'] = 'required_with:sub_category_type|in:' . implode(',', $subCategory->type_list);
+        }
+
         $variationInputType = preg_replace('/_.*/', '', $subCategory->variationStructure->input_type);
         $subVariationInputType = 'string';
         $subVariationInputList = '';
         if ($subCategory->subVariationStructure != null) {
-            $subVariationInputType = preg_replace('/_.*/', '', $subCategory->subVariationStructure->input_type);
+            $subVariationInputType = str_replace('list', 'string', preg_replace('/_.*/', '', $subCategory->subVariationStructure->input_type));
             if ($subCategory->subVariationStructure->input_list != null) {
                 $subVariationInputList = '|in:' . implode(',', $subCategory->subVariationStructure->input_list);
             }
@@ -128,6 +137,7 @@ class ProductController extends Controller
                 $filterRules['filters.' . $filterStructure->name] = $required . preg_replace('/_.*/', '', $filterStructure->input_type) . $inputList;
             }
         }
+
         // foreach ($subCategory->filterStructues as $filterStructure) {
         // $filterRules[$filterStructure->name] = 'required|' . $filterStructure->input_type . $filterStructure->input_list;
         // }
@@ -137,7 +147,7 @@ class ProductController extends Controller
         ]);
 
 
-        $request->validate([
+        $request->validate($typeValidation + [
             'name' => 'required|string|max:100',
             'desc' => 'required|string|max:255',
 
@@ -147,7 +157,7 @@ class ProductController extends Controller
             'variation' => "required|$variationInputType|max:50",
 
             'sub_variations' => 'required_if:sub_variation,mandatory|array',
-            'sub_variations.*.value' => "required_with:sub_variations|$subVariationInputType|max:50$subVariationInputList", //value instead of name
+            'sub_variations.*.sub_variation' => "required_with:sub_variations|$subVariationInputType|max:50$subVariationInputList", //value instead of name
             'sub_variations.*.price' => 'required_with:sub_variations|numeric|min:0',
             'sub_variations.*.mrp' => 'required_with:sub_variations|gt:sub_variations.*.price|numeric|min:0',
 
@@ -158,6 +168,7 @@ class ProductController extends Controller
 
 
         ] + $filterRules);
+
 
         $allTags = [];
 
@@ -191,10 +202,10 @@ class ProductController extends Controller
             $maxMrp = 0;
             $maxPrice = 0;
             foreach ($request->sub_variations as $sub_variation) {
-                $allTags[AllTag::firstOrCreate(['value' => $sub_variation['value'], 'type' => 'sub_variation'])->all_tag_id] = true;
+                $allTags[AllTag::firstOrCreate(['value' => $sub_variation['sub_variation'], 'type' => 'sub_variation'])->all_tag_id] = true;
                 $subVariation = new SubVariation();
                 $subVariation->product_id = $currentProductID;
-                $subVariation->sub_variation = $sub_variation['value'];
+                $subVariation->sub_variation = $sub_variation['sub_variation'];
                 $subVariation->price = $sub_variation['price'];
                 $subVariation->mrp = $sub_variation['mrp'];
                 $subVariation->save();

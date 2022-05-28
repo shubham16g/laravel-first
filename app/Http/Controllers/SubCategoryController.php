@@ -151,10 +151,10 @@ class SubCategoryController extends Controller
     {
         $request->validate([
             'sub_category' => 'integer|exists:sub_categories,sub_category_id',
-            'filter_structure' => 'integer|exists:filter_structures,filter_structure_id',
+            'filter_structure' => 'integer|exists:form_input_structures,form_input_structure_id',
         ]);
 
-        ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $request->sub_category, 'filter_structure_id' => $request->filter_structure]);
+        ConnectFilterSubCategory::firstOrCreate(['sub_category_id' => $request->sub_category, 'filter_structure' => $request->filter_structure]);
 
         return response()->json(['message' => 'Filter Linked Successfully']);
     }
@@ -164,10 +164,10 @@ class SubCategoryController extends Controller
     {
         $request->validate([
             'sub_category' => 'integer|exists:sub_categories,sub_category_id',
-            'filter_structure' => 'integer|exists:filter_structures,filter_structure_id',
+            'filter_structure' => 'integer|exists:form_input_structures,form_input_structure_id',
         ]);
 
-        $data = ConnectFilterSubCategory::find(['sub_category_id' => $request->sub_category, 'filter_structure_id' => $request->filter_structure])->first();
+        $data = ConnectFilterSubCategory::find(['sub_category_id' => $request->sub_category, 'filter_structure' => $request->filter_structure])->first();
         if ($data != null)
             $data->delete();
         return response()->json(['message' => 'Filter Unlinked Successfully']);
